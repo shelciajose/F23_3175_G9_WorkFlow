@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_verify_otp_top_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/imgViewOTP"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/businessman" />
+
+
+    <TextView
+        android:id="@+id/txtViewOTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:gravity="center_horizontal"
+        android:text="@string/OtpVerification"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgViewOTP" />
+
+    <TextView
+        android:id="@+id/textOTP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:text="@string/EnterotpTxt"
+        android:textAlignment="center"
+        android:textColor="@color/material_dynamic_neutral80"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtViewOTP" />
+
+    <ImageView
+        android:id="@+id/numberEdit_IV"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="2dp"
+        app:srcCompat="@drawable/ic_pencil"/>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.chaos.view.PinView
+                android:id="@+id/fragment_verify_otp_enter_otp_edittext_id"
+                style="@style/PinWidget.PinView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:cursorVisible="true"
+                android:hint="00000"
+                android:layout_marginTop="12dp"
+                android:inputType="numberDecimal"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cursorColor="@color/colorLiteGrey"
+                app:cursorWidth="2dp"
+                app:hideLineWhenFilled="true"
+                app:itemCount="4"
+                android:background="@color/colorTransparent"
+                app:itemHeight="48dp"
+                app:itemRadius="4dp"
+                app:itemSpacing="7dp"
+                app:itemWidth="48dp"
+                app:lineColor="@color/colorPrimary"
+                app:lineWidth="2dp"
+                app:viewType="rectangle" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/fragment_verify_otp_submit_button_id"
+                android:background="@drawable/button_rounded_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="22dp"
+                android:textSize="15sp"
+                android:textAllCaps="false"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="@color/white"
+                android:text="@string/submit_txt" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/fragment_verify_otp_resend_otp_textview_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="26dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="xx"
+            android:textColor="@color/red"
+            android:textStyle="bold" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

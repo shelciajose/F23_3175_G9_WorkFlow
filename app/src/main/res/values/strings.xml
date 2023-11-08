@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">WorkFlow</string>
+    <string name="ImgLogin">Login Image</string>
+    <string name="MobileNumber">Enter your mobile number</string>
+    <string name="mobile_otp_txt">4 digit OTP will be send to your phone</string>
+    <string name="mobile_hint">Mobile Number</string>
+    <string name="sendme_otp_btn">Send Me OTP</string>
+    <string name="OtpVerification">OTP Verification</string>
+    <string name="EnterotpTxt">Enter 4 digit OTP send to</string>
+    <string name="submit_txt">Submit</string>
 </resources>
