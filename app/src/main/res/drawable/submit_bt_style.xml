@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <padding android:top="@dimen/loginBtPadding"
+        android:bottom="@dimen/loginBtPadding"
+        android:right="@dimen/loginBtPadding"
+        android:left="@dimen/loginBtPadding"/>
+    <gradient
+        android:startColor="@color/theme_main_color_blue"
+        android:endColor="@color/theme_secondary_color_blue"
+        android:angle="270"/>
+    <corners android:radius="20dp" />
+</shape>
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--android:shape="rectangle">-->
+<!--<gradient-->
+<!--    android:startColor="@color/theme_secondary_color_blue"-->
+<!--    android:endColor="@color/theme_main_color_blue"-->
+<!--    android:angle="120" />-->
+<!--<corners android:radius="20dp"/>-->
+<!--</shape>-->

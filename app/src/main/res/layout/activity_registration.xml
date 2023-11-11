@@ -103,14 +103,14 @@
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/activity_req_for_mobile_no_editext_id"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:background="@color/colorTransparent"
                     android:gravity="center"
                     android:hint="@string/mobile_hint"
                     android:inputType="number"
                     android:maxLength="10"
                     android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:textSize="25dp" />
             </LinearLayout>
         </LinearLayout>
 

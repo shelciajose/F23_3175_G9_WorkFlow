@@ -65,31 +65,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.chaos.view.PinView
-                android:id="@+id/fragment_verify_otp_enter_otp_edittext_id"
-                style="@style/PinWidget.PinView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:cursorVisible="true"
-                android:hint="00000"
-                android:layout_marginTop="12dp"
-                android:inputType="numberDecimal"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:cursorColor="@color/colorLiteGrey"
-                app:cursorWidth="2dp"
-                app:hideLineWhenFilled="true"
-                app:itemCount="4"
-                android:background="@color/colorTransparent"
-                app:itemHeight="48dp"
-                app:itemRadius="4dp"
-                app:itemSpacing="7dp"
-                app:itemWidth="48dp"
-                app:lineColor="@color/colorPrimary"
-                app:lineWidth="2dp"
-                app:viewType="rectangle" />
-
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/fragment_verify_otp_submit_button_id"
                 android:background="@drawable/button_rounded_blue"

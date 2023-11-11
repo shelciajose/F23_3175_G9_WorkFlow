@@ -8,4 +8,22 @@
     <string name="OtpVerification">OTP Verification</string>
     <string name="EnterotpTxt">Enter 4 digit OTP send to</string>
     <string name="submit_txt">Submit</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="WelcomeTo">WELCOME TO</string>
+
+    <string name="profilepics">profilePics</string>
+    <string name="profile">Profile</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="Nametxt">Name</string>
+    <string name="Namehint">Name</string>
+    <string name="UserIdtxt">User ID</string>
+    <string name="UserIdHint">UserID</string>
+    <string name="DeptTxt">Department</string>
+    <string name="DeptHint">Department</string>
+    <string name="Phonetxt">Phone Number</string>
+    <string name="Phonehint">Phone Number</string>
+    <string name="EmaiTxt">Email</string>
+    <string name="EmailHint">Email</string>
+    <string name="AddressTxt">Address</string>
+    <string name="AddressHint">Address</string>
 </resources>

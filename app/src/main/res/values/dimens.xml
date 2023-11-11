@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="backArrowWidth">35dp</dimen>
+    <dimen name="backArrowHeight">35dp</dimen>
+    <dimen name="loginBtPadding">15dp</dimen>
+
+</resources>
