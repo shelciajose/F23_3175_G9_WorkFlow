@@ -26,4 +26,11 @@
     <string name="EmailHint">Email</string>
     <string name="AddressTxt">Address</string>
     <string name="AddressHint">Address</string>
+
+    <string name="txtNavHome">Home</string>
+    <string name="txtNavProfile">Profile</string>
+    <string name="txtNavCalendar">Calendar</string>
+    <string name="txtNavLeaveRequest">Request</string>
+    <string name="txtNavChat">Chat</string>
+    <string name="txtNavSignOut">Sign out</string>
 </resources>
