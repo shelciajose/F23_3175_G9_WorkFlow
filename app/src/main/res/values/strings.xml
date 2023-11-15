@@ -36,5 +36,6 @@
     <string name="alert">Alert</string>
     <string name="internalError">Internal E</string>
     <string name="sendOTP">Send OTP</string>
+    <string name="Otp6">"Enter 6 digit OTP send to - "</string>
 
 </resources>

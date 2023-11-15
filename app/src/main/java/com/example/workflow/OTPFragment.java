@@ -15,6 +15,7 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workflow.R;
@@ -46,6 +47,15 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 //                .setOnClickListener(this);
         viewFragment.findViewById(R.id.fragment_verify_otp_resend_otp_textview_id)
                 .setOnClickListener(this);
+
+        ((TextView)viewFragment.findViewById(R.id.phonenumber_tv)).setText(getArguments().getString("mobno"));
+
+        viewFragment.findViewById(R.id.numberEdit_IV).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), RegistrationActivity.class));
+            }
+        });
 
 
         viewFragment.findViewById(R.id.fragment_verify_otp_submit_button_id).setOnClickListener(new View.OnClickListener() {

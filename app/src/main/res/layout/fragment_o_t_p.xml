@@ -44,12 +44,25 @@
         android:layout_margin="4dp"
         android:layout_marginTop="40dp"
         android:gravity="center_horizontal"
-        android:text="@string/EnterotpTxt"
+        android:text="@string/Otp6"
         android:textAlignment="center"
         android:textColor="@color/material_dynamic_neutral80"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtViewOTP" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/phonenumber_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:text=" -" />
 
     <ImageView
         android:id="@+id/numberEdit_IV"
@@ -57,6 +70,8 @@
         android:layout_height="22dp"
         android:layout_marginLeft="2dp"
         app:srcCompat="@drawable/ic_pencil"/>
+
+    </LinearLayout>
 
 
 
@@ -104,17 +119,16 @@
                 android:text="@string/submit_txt" />
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/fragment_verify_otp_resend_otp_textview_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="26dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="xx"
-            android:textColor="@color/red"
-            android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/fragment_verify_otp_resend_otp_textview_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="26dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:textColor="@color/red"
+        android:textStyle="bold" />
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>
