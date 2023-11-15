@@ -11,4 +11,6 @@
     <color name="colorLiteBlue">#D2B5D2E1</color>
     <color name="gray">#c3c3c3</color>
     <color name="theme_secondary_color_blue">#3168BC</color>
+    <color name="colorPrimaryDark">#024265</color>
+
 </resources>

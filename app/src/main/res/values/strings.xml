@@ -6,11 +6,11 @@
     <string name="mobile_hint">Mobile Number</string>
     <string name="sendme_otp_btn">Send Me OTP</string>
     <string name="OtpVerification">OTP Verification</string>
-    <string name="EnterotpTxt">Enter 4 digit OTP send to</string>
+    <string name="EnterotpTxt">Enter 6 digit OTP</string>
     <string name="submit_txt">Submit</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="WelcomeTo">WELCOME TO</string>
-
+    <string name="justErrorCode">EC </string>
     <string name="profilepics">profilePics</string>
     <string name="profile">Profile</string>
     <string name="personal_information">Personal Information</string>
@@ -26,11 +26,15 @@
     <string name="EmailHint">Email</string>
     <string name="AddressTxt">Address</string>
     <string name="AddressHint">Address</string>
-
+    <string name="time_zone_alert">won\'t work without automatic date/time and zone. Please enable automatic date/time and zone.</string>
     <string name="txtNavHome">Home</string>
     <string name="txtNavProfile">Profile</string>
     <string name="txtNavCalendar">Calendar</string>
     <string name="txtNavLeaveRequest">Request</string>
     <string name="txtNavChat">Chat</string>
     <string name="txtNavSignOut">Sign out</string>
+    <string name="alert">Alert</string>
+    <string name="internalError">Internal E</string>
+    <string name="sendOTP">Send OTP</string>
+
 </resources>

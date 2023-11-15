@@ -3,5 +3,6 @@
     <dimen name="backArrowWidth">35dp</dimen>
     <dimen name="backArrowHeight">35dp</dimen>
     <dimen name="loginBtPadding">15dp</dimen>
+    <dimen name="splash_screen_workflow_logo_left_right_margin">67dp</dimen>
 
 </resources>
