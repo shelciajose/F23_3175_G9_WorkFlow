@@ -38,4 +38,8 @@
     <string name="sendOTP">Send OTP</string>
     <string name="Otp6">"Enter 6 digit OTP send to - "</string>
 
+
+    <string name="txtCalendarTitle">Calendar</string>
+    <string name="txtWorkSchedule">Work Schedule</string>
+
 </resources>

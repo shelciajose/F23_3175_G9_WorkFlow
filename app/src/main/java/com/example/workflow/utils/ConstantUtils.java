@@ -87,4 +87,7 @@ public class ConstantUtils {
     ////////////////// in call ui package. . . .
     public static final String IN_CALL_UI_PACKAGE_NAME_1 = "com.android.incallui";
     public static final String IN_CALL_UI_PACKAGE_NAME_2 = "com.android.dialer";
+
+    //Calendar
+    public static final String FORMAT_CALENDAR_EVENT = "MM/dd/yyyy";
 }
