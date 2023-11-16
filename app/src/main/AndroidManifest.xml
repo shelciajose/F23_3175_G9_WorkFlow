@@ -54,6 +54,8 @@
             android:name=".RegistrationActivity"
             android:exported="true" >
         </activity>
+        <activity android:name=".ChatActivity"/>
+
     </application>
 
 </manifest>

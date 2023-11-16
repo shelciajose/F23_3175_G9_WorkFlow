@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".ChatActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolBarChat"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize">
+<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iconProfileChat"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/account_icon" />
+
+            <TextView
+                android:id="@+id/txtViewReceiverNameChat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/txtReceiverName_Chat"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/layoutMessageInput"
+        android:layout_below="@id/toolBarChat" />
+
+    <LinearLayout
+        android:id="@+id/layoutMessageInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editTxtMessage"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.7"
+            android:background="@null"
+            android:hint="@string/txtHintMessage"
+            android:inputType="textCapSentences|textMultiLine"
+            android:padding="10dp"
+            android:textColor="@color/chat_text" />
+
+        <ImageButton
+            android:id="@+id/imgBtnMessageSend"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:background="@drawable/message_send"
+            android:contentDescription="@string/contentDesMessageSend" />
+    </LinearLayout>
+
+
+</RelativeLayout>

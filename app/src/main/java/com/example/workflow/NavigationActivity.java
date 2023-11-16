@@ -55,9 +55,12 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
             } else if(item.getItemId() == R.id.menu_chat) {
                 actionBar.setTitle("Chat");
+                ChatListFragment listFragment = new ChatListFragment();
+                FragmentTransaction fragmentTransactionChat = getSupportFragmentManager().beginTransaction();
+                fragmentTransactionChat.replace(R.id.content, listFragment, "");
+                fragmentTransactionChat.commit();
 
                 return true;
-
             } else {
                 return false;
             }
