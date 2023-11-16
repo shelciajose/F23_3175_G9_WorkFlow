@@ -2,18 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_home"
+        android:icon="@drawable/icon_checkin"
         android:title="@string/txtNavHome" />
     <item
         android:id="@+id/menu_profile"
+        android:icon="@drawable/icon_profile"
         android:title="@string/txtNavProfile" />
     <item
         android:id="@+id/menu_calendar"
+        android:icon="@drawable/icon_calendar"
         android:title="@string/txtNavCalendar" />
     <item
         android:id="@+id/menu_leaveRequest"
+        android:icon="@drawable/icon_leave_request"
         android:title="@string/txtNavLeaveRequest" />
     <item
         android:id="@+id/menu_chat"
+        android:icon="@drawable/icon_chat"
         android:title="@string/txtNavChat" />
 <!--    <item-->
 <!--        android:id="@+id/menu_singout"-->
