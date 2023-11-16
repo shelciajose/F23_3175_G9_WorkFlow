@@ -87,4 +87,45 @@ public class ConstantUtils {
     ////////////////// in call ui package. . . .
     public static final String IN_CALL_UI_PACKAGE_NAME_1 = "com.android.incallui";
     public static final String IN_CALL_UI_PACKAGE_NAME_2 = "com.android.dialer";
+
+    //Takumi using
+    public static final String KEY_ID = "id";
+    public static final String KEY_USER = "users";
+    public static final String KEY_RECEIVER_USER_ID = "receiverUserId";
+    public static final String KEY_CONNECTED_USER = "connectedUser";
+    public static final String KEY_USER_NAME = "userName";
+    public static final String KEY_USER_ID = "userId";
+    public static final String KEY_IMAGE = "image";
+    public static final String KEY_IMAGE_CHAT = "imageChat";
+    public static final String KEY_ONLINE_STATUS = "onlineStatus";
+    public static final String KEY_PROCESSING = "processing";
+    public static final String KEY_PROCESSING_CHAT = "processingChat";
+    public static final String KEY_ONLINE = "online";
+    public static final String KEY_OFFLINE = "offline";
+    public static final String KEY_CHAT = "chat";
+    public static final String KEY_CHAT_LIST = "chatList";
+    public static final String KEY_DATE_FORMAT_CHAT = "dd/MM/yyyy hh:mm aa";
+    public static final String KEY_SENDER = "sender";
+    public static final String KEY_RECEIVER = "receiver";
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_TIME_STAMP = "timeStamp";
+    public static final String KEY_DILIHAT = "dilihat";
+
+    public static final int KEY_MESSAGE_TYPE_LEFT = 0;
+    public static final int KEY_MESSAGE_TYPE_RIGHT = 1;
+    public static final String KEY_DELETE = "delete";
+    public static final String KEY_CANCEL = "cancel";
+
+    public static final String KEY_EMAIL = "email";
+
+    public static final String KEY_FIRST_NAME = "firstName";
+    public static final String KEY_LAST_NAME ="lastName";
+    public static final String KEY_DEPARTMENT = "dept";
+    public static final String KEY_LEAVE_START_DATE = "leaveStartDate";
+    public static final String KEY_LEAVE_END_DATE = "leaveEndDate";
+    public static final String MAIL_ADDRESS_MANAGER = "workflow.g9.manager@outlook.com";
+    public static final String MAIL_PW = "csis3175g9";
+    public static final String MAIL_EMPLOYER = "takumi42.08@outlook.com";
+
+    //end takumi
 }
