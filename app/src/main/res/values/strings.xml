@@ -38,4 +38,11 @@
     <string name="sendOTP">Send OTP</string>
     <string name="Otp6">"Enter 6 digit OTP send to - "</string>
 
+    <string name="txtLeaveRequestTitle">Leave Request</string>
+    <string name="txtViewLeaveStartDate">Start Date</string>
+    <string name="hintLeaveStartDate">Enter Leave Start Date</string>
+    <string name="txtViewLeaveEndDate">End Date</string>
+    <string name="hintLeaveEndDate">Enter Leave End Date</string>
+    <string name="btnLeaveRequest">Send Leave Request</string>
+
 </resources>

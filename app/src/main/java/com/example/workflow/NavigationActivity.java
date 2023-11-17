@@ -55,6 +55,10 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
             } else if(item.getItemId() == R.id.menu_leaveRequest) {
                 actionBar.setTitle("Leave Request");
+                LeaveRequestFragment leaveRequestFragment = new LeaveRequestFragment();
+                FragmentTransaction fragmentTransactionLeaveRequest = getSupportFragmentManager().beginTransaction();
+                fragmentTransactionLeaveRequest.replace(R.id.content, leaveRequestFragment, "");
+                fragmentTransactionLeaveRequest.commit();
 
                 return true;
             } else if(item.getItemId() == R.id.menu_chat) {
