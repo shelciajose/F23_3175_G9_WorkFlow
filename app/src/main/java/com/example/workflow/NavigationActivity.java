@@ -47,6 +47,10 @@ public class NavigationActivity extends AppCompatActivity {
                 return true;
             } else if(item.getItemId() == R.id.menu_calendar) {
                 actionBar.setTitle("Calendar");
+                CalendarFragment calendarFragment = new CalendarFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content, calendarFragment);
+                fragmentTransaction.commit();
 
                 return true;
             } else if(item.getItemId() == R.id.menu_leaveRequest) {
