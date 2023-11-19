@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.models;
 
 public class LeaveRequestModel {
     private String userId;

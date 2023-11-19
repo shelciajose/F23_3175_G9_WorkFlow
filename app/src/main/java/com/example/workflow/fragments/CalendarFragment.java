@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.fragments;
 
 import static com.example.workflow.utils.ConstantUtils.FORMAT_CALENDAR_EVENT;
 
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
+import com.example.workflow.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 

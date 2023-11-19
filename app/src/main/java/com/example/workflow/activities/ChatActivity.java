@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.activities;
 
 import static com.example.workflow.utils.ConstantUtils.KEY_CHAT;
 import static com.example.workflow.utils.ConstantUtils.KEY_CHAT_LIST;
@@ -15,7 +15,6 @@ import static com.example.workflow.utils.ConstantUtils.KEY_USER_NAME;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.workflow.R;
+import com.example.workflow.chat.ChatAdapter;
+import com.example.workflow.chat.ChatModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +39,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 public class ChatActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -19,8 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workflow.R;
-import com.example.workflow.NavigationActivity;
-import com.example.workflow.RegistrationActivity;
+import com.example.workflow.activities.RegistrationActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

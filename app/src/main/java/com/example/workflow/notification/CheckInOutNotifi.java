@@ -16,7 +16,7 @@ import android.window.SplashScreen;
 import androidx.core.app.NotificationCompat;
 
 import com.example.workflow.R;
-import com.example.workflow.NavigationActivity;
+import com.example.workflow.activities.NavigationActivity;
 import com.example.workflow.utils.ConstantUtils;
 import com.example.workflow.utils.PreferenceUtils;
 

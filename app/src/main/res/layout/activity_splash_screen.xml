@@ -9,7 +9,7 @@
     android:id="@+id/activity_splashscreen_top_view_id"
     android:gravity="center"
     android:fitsSystemWindows="true"
-    tools:context=".SplashScreen">
+    tools:context=".activities.SplashScreen">
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

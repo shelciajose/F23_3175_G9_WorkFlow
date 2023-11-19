@@ -45,4 +45,26 @@
     <string name="hintLeaveEndDate">Enter Leave End Date</string>
     <string name="btnLeaveRequest">Send Leave Request</string>
 
+
+    <string name="txtMessageLeft">His Message</string>
+    <string name="txtTimeLeft">11/02/2023 01: 59PM</string>
+    <string name="txtReadLeft">Delivered</string>
+    <string name="txtTimeRight">02/01/1990 06:19PM</string>
+    <string name="txtMessageRight">Hello world</string>
+    <string name="txtReadRight">DeliveredRight</string>
+    <string name="txtNameptv">His name</string>
+    <string name="txtOnline">Online</string>
+    <string name="txtReceiverName_Chat">Receiver name</string>
+    <string name="txtOnlineStatus">Online status</string>
+    <string name="txtHintMessage">Input message</string>
+    <string name="contentDesMessageSend">Message send</string>
+    <string name="contentDesImageBlock">Image block</string>
+    <string name="txtDeliveredLeft">Delivered</string>
+    <string name="txtNameChatList">User name</string>
+    <string name="txtLastMessage">Last message</string>
+
+    <string name="txtCalendarTitle">Calendar</string>
+    <string name="txtWorkSchedule">Work Schedule</string>
+
+
 </resources>

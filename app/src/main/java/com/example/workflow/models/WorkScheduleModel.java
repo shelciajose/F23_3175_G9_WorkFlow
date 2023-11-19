@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.models;
 
 import java.util.Date;
 

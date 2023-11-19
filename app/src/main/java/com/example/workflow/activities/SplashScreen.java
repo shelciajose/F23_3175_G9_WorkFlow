@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.activities;
 
 import static com.example.workflow.utils.ConstantUtils.ACCOUNT;
 import static com.example.workflow.utils.ConstantUtils.ACCOUNT_TYPE;
@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.workflow.R;
 import com.example.workflow.utils.CommonFunc;
 import com.example.workflow.utils.ConstantUtils;
 import com.example.workflow.utils.NetworkUtils;
@@ -127,7 +128,7 @@ public class SplashScreen extends AppCompatActivity {
                             {
                                 if (simJson.equals(PreferenceUtils.getSimDataFromPreference(SplashScreen.this))) {
 
-                                    startActivity(new Intent(SplashScreen.this, MainActivity.class));
+                                    startActivity(new Intent(SplashScreen.this, RegistrationActivity.class));
                                     finish();
                                 } else {
                                     Toast.makeText(SplashScreen.this, "Sim change detected.. verify again..", Toast.LENGTH_LONG).show();
@@ -219,7 +220,7 @@ public class SplashScreen extends AppCompatActivity {
             {
                 if (simJson.equals(PreferenceUtils.getSimDataFromPreference(SplashScreen.this))) {
 
-                    startActivity(new Intent(SplashScreen.this, MainActivity.class));
+                    startActivity(new Intent(SplashScreen.this, RegistrationActivity.class));
                     finish();
                 } else {
                     Toast.makeText(SplashScreen.this, "Sim change detected.. verify again..", Toast.LENGTH_LONG).show();
@@ -245,7 +246,7 @@ public class SplashScreen extends AppCompatActivity {
                     if (!simJson.equals(NO_SIM_CARD)) // check sim card in lolopop
                     {
                         if (simJson.equals(PreferenceUtils.getSimDataFromPreference(SplashScreen.this))) {
-                            startActivity(new Intent(SplashScreen.this, MainActivity.class));
+                            startActivity(new Intent(SplashScreen.this, RegistrationActivity.class));
                             finish();
                         } else {
                             Toast.makeText(SplashScreen.this, "Sim change detected.. verify again..", Toast.LENGTH_LONG).show();

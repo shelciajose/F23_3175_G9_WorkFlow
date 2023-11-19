@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.chat;
 
 public class ChatModel {
     private String message;

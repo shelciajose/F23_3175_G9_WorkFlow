@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.chat;
 
 import static com.example.workflow.utils.ConstantUtils.KEY_CHAT;
 import static com.example.workflow.utils.ConstantUtils.KEY_RECEIVER;
@@ -13,7 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.bumptech.glide.Glide;
+
+import com.example.workflow.activities.ChatActivity;
+import com.example.workflow.R;
+import com.example.workflow.models.UserModel;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.List;

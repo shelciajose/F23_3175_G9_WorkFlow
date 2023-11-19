@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.models;
 
 public class UserModel {
     private String userName;

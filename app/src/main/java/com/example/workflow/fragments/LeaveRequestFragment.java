@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.fragments;
 
 import static com.example.workflow.utils.ConstantUtils.KEY_DEPARTMENT;
 import static com.example.workflow.utils.ConstantUtils.KEY_FIRST_NAME;
@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.workflow.models.LeaveRequestModel;
+import com.example.workflow.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

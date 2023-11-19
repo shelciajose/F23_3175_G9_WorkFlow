@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -8,6 +8,12 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.workflow.R;
+import com.example.workflow.chat.ChatListFragment;
+import com.example.workflow.fragments.CalendarFragment;
+import com.example.workflow.fragments.HomeFragment;
+import com.example.workflow.fragments.LeaveRequestFragment;
+import com.example.workflow.fragments.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -39,18 +45,26 @@ public class NavigationActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             if(item.getItemId() == R.id.menu_home) {
                 actionBar.setTitle("Home");
+                HomeFragment homeFragment = new HomeFragment();
+                FragmentTransaction fragmentTransactionHome = getSupportFragmentManager().beginTransaction();
+                fragmentTransactionHome.replace(R.id.content, homeFragment);
+                fragmentTransactionHome.commit();
 
                 return true;
             } else if(item.getItemId() == R.id.menu_profile) {
                 actionBar.setTitle("Profile");
+                ProfileFragment profileFragment = new ProfileFragment();
+                FragmentTransaction fragmentTransactionProfile = getSupportFragmentManager().beginTransaction();
+                fragmentTransactionProfile.replace(R.id.content, profileFragment);
+                fragmentTransactionProfile.commit();
 
                 return true;
             } else if(item.getItemId() == R.id.menu_calendar) {
                 actionBar.setTitle("Calendar");
                 CalendarFragment calendarFragment = new CalendarFragment();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content, calendarFragment);
-                fragmentTransaction.commit();
+                FragmentTransaction fragmentTransactionCalendar = getSupportFragmentManager().beginTransaction();
+                fragmentTransactionCalendar.replace(R.id.content, calendarFragment);
+                fragmentTransactionCalendar.commit();
 
                 return true;
             } else if(item.getItemId() == R.id.menu_leaveRequest) {

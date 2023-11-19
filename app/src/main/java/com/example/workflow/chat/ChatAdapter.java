@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.chat;
 
 import static com.example.workflow.utils.ConstantUtils.KEY_CANCEL;
 import static com.example.workflow.utils.ConstantUtils.KEY_CHAT;
@@ -23,7 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import com.bumptech.glide.Glide;
+
+import com.example.workflow.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatAdapter extends RecyclerView.Adapter<com.example.workflow.ChatAdapter.Myholder>{
+public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Myholder>{
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     Context context;
     String userId;

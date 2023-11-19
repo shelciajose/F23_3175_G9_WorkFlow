@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.WorkFlow" parent="Theme.MaterialComponents.DayNight">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="colorPrimary" > @color/colorPrimary </item>
+
+        <item name="android:statusBarColor"> @color/colorLiteBlue</item>
+        <item name="android:textColor"> @color/black</item>
+
     </style>
 
     <style name="Theme.WorkFlow" parent="Base.Theme.WorkFlow" />

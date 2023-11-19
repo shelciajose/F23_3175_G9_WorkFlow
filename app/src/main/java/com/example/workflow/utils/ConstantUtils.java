@@ -127,5 +127,7 @@ public class ConstantUtils {
     public static final String MAIL_PW = "csis3175g9";
     public static final String MAIL_EMPLOYER = "takumi42.08@outlook.com";
 
+    public static final String FORMAT_CALENDAR_EVENT = "MM/dd/yyyy";
+
     //end takumi
 }

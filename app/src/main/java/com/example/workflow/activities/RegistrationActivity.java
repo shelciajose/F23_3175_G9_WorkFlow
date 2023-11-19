@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.activities;
 
 import static android.content.ContentValues.TAG;
 
@@ -22,12 +22,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.workflow.R;
-import com.example.workflow.OTPFragment;
+import com.example.workflow.fragments.OTPFragment;
 import com.example.workflow.utils.CommonFunc;
 import com.example.workflow.utils.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,15 +56,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         ((AppCompatButton) findViewById(R.id.activity_req_for_mobile_no_generate_otp_button_id)).setOnClickListener(this);
 
-        try {
-            alertMiUsers();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////// progress. . .
+    //////// progress. . .
     private Dialog dialogProgress = null;
 
     //
@@ -85,38 +78,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 dialogProgress.dismiss();
             }
             dialogProgress = null;
-        }
-    }
-
-    /////////////////////////////// req for auto start by xiaomi
-    private void alertMiUsers() throws Exception {
-        String manufacturer = "xiaomi";
-        if (manufacturer.equalsIgnoreCase(Build.MANUFACTURER)) {
-
-
-            new AlertDialog.Builder(RegistrationActivity.this)
-                    .setTitle("Alert!!")
-                    .setMessage("Dear Xiaomi user, Please enable Autostart for " + getString(R.string.app_name) + " , Skip if already enabled.")
-                    .setCancelable(true)
-                    .setPositiveButton("enable", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            try {
-                                Intent intent = new Intent();
-                                intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                Toast.makeText(RegistrationActivity.this, "Seems like this is a stock android device.. you can directly proceed", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                    }).setNegativeButton("skip", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    }).create().show();
         }
     }
 
@@ -149,8 +110,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    ////////////////////////////////// firebase
-    ///////////////////////////////////////////////////////////////////////////////////////////////// generate sms. . . . . . .
+    ///firebase
+    ////generate sms. . . . . . .
     // global variable
     public String mVerificationId = null;
     public PhoneAuthProvider.ForceResendingToken mResendToken = null;

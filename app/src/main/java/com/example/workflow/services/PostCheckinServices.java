@@ -29,7 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.example.workflow.R;
-import com.example.workflow.NavigationActivity;
+import com.example.workflow.activities.NavigationActivity;
 import com.example.workflow.mvp.BasePresentor;
 import com.example.workflow.mvp.BasePresentorImp;
 import com.example.workflow.mvp.BaseView;

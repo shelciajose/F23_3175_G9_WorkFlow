@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/req_for_mobile_content_base"
-    tools:context=".RegistrationActivity">
+    tools:context=".activities.RegistrationActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

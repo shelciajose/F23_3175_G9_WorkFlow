@@ -1,4 +1,4 @@
-package com.example.workflow;
+package com.example.workflow.chat;
 
 import static com.example.workflow.utils.ConstantUtils.KEY_CHAT;
 import static com.example.workflow.utils.ConstantUtils.KEY_CHAT_LIST;
@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.workflow.R;
+import com.example.workflow.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
