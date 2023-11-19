@@ -42,8 +42,6 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
         viewFragment = inflater.inflate(R.layout.fragment_o_t_p, container, false);
         countDownTimer.start();
-//        viewFragment.findViewById(R.id.fragment_verify_otp_submit_button_id)
-//                .setOnClickListener(this);
         viewFragment.findViewById(R.id.fragment_verify_otp_resend_otp_textview_id)
                 .setOnClickListener(this);
 

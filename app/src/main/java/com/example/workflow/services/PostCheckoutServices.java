@@ -170,7 +170,7 @@ public class PostCheckoutServices extends Service implements BaseView {
         final NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_CHECK_OUT_OF_TRACKING_NOTIFICATION);
         builder.setSmallIcon(R.drawable.app_ticker_icon);
-        builder.setContentTitle("Travelize");
+        builder.setContentTitle("Workflow");
         builder.setLargeIcon(logoBitmapIcon);
         builder.setTicker("Performing check-out");
         builder.setContentText("Checking-out...");

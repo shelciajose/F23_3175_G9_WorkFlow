@@ -1,24 +1,14 @@
 package com.example.workflow.activities;
 
 import static android.content.ContentValues.TAG;
-
-import static com.example.workflow.utils.CommonFunc.formTheSimInfoString;
-import static com.example.workflow.utils.ConstantUtils.NO_SIM_CARD;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +18,6 @@ import android.widget.Toast;
 import com.example.workflow.R;
 import com.example.workflow.fragments.OTPFragment;
 import com.example.workflow.utils.CommonFunc;
-import com.example.workflow.utils.NetworkUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -53,12 +42,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-
-        ((AppCompatButton) findViewById(R.id.activity_req_for_mobile_no_generate_otp_button_id)).setOnClickListener(this);
-
+        (findViewById(R.id.activity_req_for_mobile_no_generate_otp_button_id)).setOnClickListener(this);
     }
 
-    //////// progress. . .
     private Dialog dialogProgress = null;
 
     //
@@ -83,30 +69,17 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
 
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.activity_req_for_mobile_no_generate_otp_button_id) {
-                if (CommonFunc.isGooglePlayServicesAvailable(RegistrationActivity.this)) {
-                    if (((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().isEmpty()) {
+    public void onClick(View v)
+    {
+        if (v.getId() == R.id.activity_req_for_mobile_no_generate_otp_button_id)
+        {
+                    if (((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().isEmpty())
+                    {
                         ((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).setError("Please enter mobile no");
                     } else {
-                        if (NetworkUtils.checkInternetAndOpenDialog(RegistrationActivity.this,
-                                RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base))) {
-                            String simJson = formTheSimInfoString(RegistrationActivity.this);
-                            if (!simJson.equals(NO_SIM_CARD)) // check sim card in lolopop
-                            {
-                                checkValidUserOrNot(((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().trim());
-
-                            } else {
-                                CommonFunc.commonDialog(RegistrationActivity.this, getString(R.string.alert),
-                                        "Without sim card you can not access WorkFlow", false,
-
-                                        RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base));
+                         checkValidUserOrNot(((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().trim());
                             }
 
-                        }
-
-                    }
-                }
         }
     }
 
@@ -118,12 +91,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     private PhoneAuthCredential credential = null;
 
     ////
-    public void triggerFireBaseOTP() {
-
-
-
-        if (NetworkUtils.checkInternetAndOpenDialog(RegistrationActivity.this,
-                RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base))) {
+    public void triggerFireBaseOTP()
+    {
             showProgressDialog();
             PhoneAuthProvider.verifyPhoneNumber(
                     PhoneAuthOptions
@@ -134,9 +103,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                             .setTimeout(60L, TimeUnit.SECONDS)
                             .setCallbacks(onVerificationStateChangedCallbacks)
                             .build());
-            }
-
-
     }
 
 
@@ -151,7 +117,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 @Override
                 public void onVerificationFailed(FirebaseException e) {
                     dismissProgressDialog();
-                    Toast.makeText(RegistrationActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistrationActivity.this, " User not found ", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -176,9 +142,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
                             reqForLoginAfterOTPMatched();
-
                         } else {
                             // Sign in failed, display a message and update the UI
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -210,20 +174,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         Task<DataSnapshot> num = rootRef.child("users").child("101").child("phoneNumber").get();
 
         ValueEventListener eventListener = new ValueEventListener() {
-            @Override
-            /* public void onDataChange(DataSnapshot dataSnapshot) {
-                if((String.valueOf(num.getResult().getValue())).equals(Phone))
-                {
-                    triggerFireBaseOTP();
-                }
-
-                else {
-                    dismissProgressDialog();
-                    CommonFunc.commonDialog(RegistrationActivity.this, getString(R.string.alert),
-                            "User Doesn't Exist", false,
-                            RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base));
-                }
-            */
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if(!dataSnapshot.exists()) {
                         dismissProgressDialog();
@@ -238,7 +188,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
+                Log.d(TAG, databaseError.getMessage());
                 CommonFunc.commonDialog(RegistrationActivity.this, getString(R.string.alert),
                         databaseError.getMessage(), false,
                         RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base));
@@ -246,18 +196,16 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         };
         userNameRef.addListenerForSingleValueEvent(eventListener);
     }
-    /////////////////////////////////////////////////////////////////////////// req for login after otp has matched
+
     public void reqForLoginAfterOTPMatched() {
 
         startActivity(new Intent(RegistrationActivity.this, NavigationActivity.class));
 
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
-
         dismissProgressDialog();
     }
 
