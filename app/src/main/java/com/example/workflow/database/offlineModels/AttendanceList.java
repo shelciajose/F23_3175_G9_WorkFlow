@@ -102,6 +102,7 @@ public class AttendanceList {
         this.checkOutLatitude = checkOutLatitude;
     }
 
+
     public String getCheckOutLocation() {
         return checkOutLocation;
     }

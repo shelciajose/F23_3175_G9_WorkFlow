@@ -58,6 +58,7 @@ public class DBTableColumnsNames {
             OFFLINE_CHECK_OUT_REFERENCE_ID + " TEXT);";
 
 
+
     ///////////////// table name
     static final String VISIT_DETAILS_TABLE_NAME = "VisitList";
     // COL

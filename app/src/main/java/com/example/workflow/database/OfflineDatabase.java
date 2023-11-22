@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class OfflineDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "workflowlite.db";
     private static final int DATABASE_VERSION = 1;
+
     private Context context;
     // tabel name
     private static final String OFFLINE_LOC_TABEL = "OFFLINE_LOC_TABEL";

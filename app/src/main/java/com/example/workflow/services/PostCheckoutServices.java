@@ -180,6 +180,7 @@ public class PostCheckoutServices extends Service implements BaseView {
         startForeground(IDENTIFIERS_FOR_CHECK_OUT_NOTIFICATION, notification);
     }
 
+
     //////////////////////////////////////////////////////////////////////////////////////// location stuff
     //////////////////////////////////////////////////////////////////////////////////////// location stuff
     private GoogleApiClient googleApiClient = null;

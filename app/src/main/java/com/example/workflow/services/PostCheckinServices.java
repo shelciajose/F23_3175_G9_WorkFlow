@@ -240,6 +240,7 @@ public class PostCheckinServices extends Service implements BaseView {
         }
     };
 
+
     private class CalculateTheDistance extends AsyncTask<Void, Void, Float> {
 
         @Override
