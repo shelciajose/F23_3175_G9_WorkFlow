@@ -6,6 +6,7 @@ import static com.example.workflow.utils.ConstantUtils.KEY_LAST_NAME;
 import static com.example.workflow.utils.ConstantUtils.KEY_LEAVE_END_DATE;
 import static com.example.workflow.utils.ConstantUtils.KEY_LEAVE_START_DATE;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER;
+import static com.example.workflow.utils.ConstantUtils.MAIL_ADDRESS_CC;
 import static com.example.workflow.utils.ConstantUtils.MAIL_ADDRESS_MANAGER;
 import static com.example.workflow.utils.ConstantUtils.MAIL_EMPLOYER;
 import static com.example.workflow.utils.ConstantUtils.MAIL_PW;
@@ -204,6 +205,7 @@ public class LeaveRequestFragment extends Fragment {
             message.addHeader("Content-Transfer-Encoding", "8bit");
             message.setFrom(new InternetAddress(MAIL_ADDRESS_MANAGER, "WORK FLOW [LEAVE REQUEST]"));
             message.setReplyTo(InternetAddress.parse(MAIL_ADDRESS_MANAGER, false));
+            message.addRecipients(MimeMessage.RecipientType.CC, new InternetAddress[]{new InternetAddress(MAIL_ADDRESS_CC, "ANOTHER RECIPIENT")});
             message.setSubject(subject, "UTF-8");
             message.setText(body.toString(), "UTF-8");
             message.setSentDate(new Date());
