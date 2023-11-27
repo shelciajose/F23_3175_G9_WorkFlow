@@ -35,6 +35,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
 
     private long minOTPWaitTime = 30000;
 
+    String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +47,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
                 .setOnClickListener(this);
 
         ((TextView)viewFragment.findViewById(R.id.phonenumber_tv)).setText(getArguments().getString("mobno"));
+        userId = getArguments().getString("userID");
 
         viewFragment.findViewById(R.id.numberEdit_IV).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,9 +79,9 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fragment_verify_otp_resend_otp_textview_id) {
-                if (((AppCompatTextView) viewFragment.findViewById(R.id.fragment_verify_otp_resend_otp_textview_id))
-                        .getText().toString().equals("Resend OTP?"))
-                    ((RegistrationActivity) getActivity()).triggerFireBaseOTP();
+            if (((AppCompatTextView) viewFragment.findViewById(R.id.fragment_verify_otp_resend_otp_textview_id))
+                    .getText().toString().equals("Resend OTP?"))
+                ((RegistrationActivity) getActivity()).triggerFireBaseOTP();
 
             else if (v.getId() == R.id.fragment_verify_otp_submit_button_id)
 
@@ -129,7 +131,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            ((RegistrationActivity)getActivity()).reqForLoginAfterOTPMatched();
+                            ((RegistrationActivity)getActivity()).getUserDetailsById(getActivity(), userId);
 
                         } else {
                             // Sign in failed, display a message and update the UI

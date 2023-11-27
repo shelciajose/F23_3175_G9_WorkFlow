@@ -168,7 +168,7 @@ public class PostCheckinServices extends Service implements BaseView {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
 
             pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-        else    pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        else    pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         //
         final NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_CHECK_IN_OF_TRACKING_NOTIFICATION);
@@ -189,7 +189,6 @@ public class PostCheckinServices extends Service implements BaseView {
     private GoogleApiClient googleApiClient = null;
     private LocationRequest locationRequest = null;
     private FusedLocationProviderClient mFusedLocationClient = null;
-    private ReverseGeocodingTask reverseGeocodingTask = null;
     private boolean isMockLocEnabled = false;
     //
 
@@ -240,7 +239,6 @@ public class PostCheckinServices extends Service implements BaseView {
         }
     };
 
-
     private class CalculateTheDistance extends AsyncTask<Void, Void, Float> {
 
         @Override
@@ -289,82 +287,20 @@ public class PostCheckinServices extends Service implements BaseView {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////// postLocToUser
 
     private void saveLocToServer(Location location) {
-        if (NetworkUtils.isConnected(context)) {
-            if (reverseGeocodingTask == null) {
-                reverseGeocodingTask = new ReverseGeocodingTask();
-                reverseGeocodingTask.execute(new LatLng(location.getLatitude(), location.getLongitude()));
-            } else {
-                if (reverseGeocodingTask.getStatus() != AsyncTask.Status.RUNNING) {
-                    reverseGeocodingTask = new ReverseGeocodingTask();
-                    reverseGeocodingTask.execute(new LatLng(location.getLatitude(), location.getLongitude()));
-                }
-            }
-        } else {
-            basePresentor.performCheckIn(context, "NA",
-                    String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()),
-                    null, null,
-                    ConstantUtils.OFFLINE_MODE);
+        String address = "";
+        if(NetworkUtils.isConnected(context)) {
+            address = CommonFunc.getAddressFromCoordinates(context, location.getLatitude(), location.getLongitude());
         }
+        else {
+            address = "NA";
+        }
+
+        basePresentor.performCheckIn(context, address,
+                String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()),
+                null, null,
+                ConstantUtils.OFFLINE_MODE);
+
     }
 
-
-    private class ReverseGeocodingTask extends AsyncTask<LatLng, Void, String> {
-        double _latitude, _longitude;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected String doInBackground(LatLng... params) {
-
-            Geocoder geocoder = new Geocoder(context);
-            _latitude = params[0].latitude;
-            _longitude = params[0].longitude;
-
-            List<Address> addresses = null;
-
-            try {
-                addresses = geocoder.getFromLocation(
-                        _latitude,
-                        _longitude,
-                        // In this sample, get just a single address.
-                        1);
-            } catch (IOException ioException) {
-                // Catch network or other I/O problems.
-
-            }
-
-            // Handle case where no address was found.
-            if (addresses == null || addresses.size() == 0) {
-                return "NA";
-
-            } else {
-                Address address = addresses.get(0);
-                ArrayList<String> addressFragments = new ArrayList<String>();
-
-                // Fetch the address lines using getAddressLine,
-                // join them, and send them to the thread.
-                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                    addressFragments.add(address.getAddressLine(i));
-                }
-                return TextUtils.join(System.getProperty("line.separator"),
-                        addressFragments);
-
-            }
-            ////////////////////////////////
-        }
-
-        @Override
-        protected void onPostExecute(String addressText) {
-            if (addressText == null)
-                addressText = "NA";
-            else if (addressText.isEmpty())
-                addressText = "NA";
-
-        }
-    }
 
 }

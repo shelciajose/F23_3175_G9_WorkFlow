@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.workflow.database.offlineModels.AttendanceList;
+import com.example.workflow.models.UserDetails;
 import com.example.workflow.utils.PreferenceUtils;
 
 import java.util.ArrayList;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 
 public class OfflineDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "workflowlite.db";
-    private static final int DATABASE_VERSION = 1;
-
+    private static final int DATABASE_VERSION = 3;
     private Context context;
     // tabel name
     private static final String OFFLINE_LOC_TABEL = "OFFLINE_LOC_TABEL";
@@ -66,17 +66,16 @@ public class OfflineDatabase extends SQLiteOpenHelper {
 
         db.execSQL(DBTableColumnsNames.CREATE_OFFLINE_ATTENDENCE_CHECKIN_TABLE);
         db.execSQL(DBTableColumnsNames.CREATE_OFFLINE_ATTENDENCE_CHECKOUT_TABLE);
-        db.execSQL(DBTableColumnsNames.CREATE_VISIT_DETAILS_TABLE);
+        db.execSQL(DBTableColumnsNames.CREATE_OFFLINE_USER_TABLE);
 
     }
 
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + OFFLINE_LOC_TABEL);
         db.execSQL("DROP TABLE IF EXISTS " + DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKIN_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKOUT_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + DBTableColumnsNames.VISIT_DETAILS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DBTableColumnsNames.OFFLINE_USER_TABLE_NAME);
         onCreate(db);
     }
 
@@ -84,6 +83,7 @@ public class OfflineDatabase extends SQLiteOpenHelper {
         deleteAllCheckOut();
         deleteAllCheckIn();
         deleteAllLastCheckOuts();
+        deleteAllUSerDetails();
     }
 
     public void addLastCheckOutDetails(String notification) {
@@ -123,6 +123,59 @@ public class OfflineDatabase extends SQLiteOpenHelper {
         values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_LOCATION, location);
         values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_REFERENCE_ID, referenceId);
         return (int) database.insert(DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKOUT_TABLE_NAME, null, values);
+    }
+
+    public int addUserDetailsToDB(String userID, String userName, String department,
+                                  String phone, String email, String address, String fname, String lname) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_ID, userID);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_USERNAME, userName);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_FIRSTNAME, fname);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_LASTNAME, lname);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_DEPARTMENT, department);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_PHONE, phone);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_EMAIL, email);
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_ADDRESS, address);
+        return (int) database.insert(DBTableColumnsNames.OFFLINE_USER_TABLE_NAME, null, values);
+    }
+
+
+    public ArrayList<UserDetails> getUser() {
+        ArrayList<UserDetails> userArrayList = new ArrayList<>();
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        String query = "SELECT * FROM " + DBTableColumnsNames.OFFLINE_USER_TABLE_NAME;
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                UserDetails userList = new UserDetails();
+
+                userList.setUserID(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_ID)));
+                userList.setUserName(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_USERNAME)));
+                userList.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_EMAIL)));
+                userList.setPhone(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_PHONE)));
+                userList.setfName(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_FIRSTNAME)));
+                userList.setlName(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_LASTNAME)));
+                userList.setDepartment(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_DEPARTMENT)));
+                userList.setAddress(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_USERDETAILS_ADDRESS)));
+                userArrayList.add(userList);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        sqLiteDatabase.close();
+        return userArrayList;
+    }
+
+    public void updateUserDetailsToDatabase(String userID, UserDetails userModel) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_FIRSTNAME, userModel.getfName() + "");
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_LASTNAME, userModel.getlName() + "");
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_ADDRESS, userModel.getAddress() + "");
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_DEPARTMENT, userModel.getDepartment() + "");
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_EMAIL, userModel.getEmail() + "");
+        values.put(DBTableColumnsNames.OFFLINE_USERDETAILS_PHONE, userModel.getPhone() + "");
+        database.update(DBTableColumnsNames.OFFLINE_USER_TABLE_NAME, values, DBTableColumnsNames.OFFLINE_USERDETAILS_ID + "=?", new String[]{userID});
     }
 
     ////////////////////////// all user checkin details /////////////////
@@ -219,7 +272,10 @@ public class OfflineDatabase extends SQLiteOpenHelper {
         database.close();
     }
 
-
-
+    public void deleteAllUSerDetails() {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(DBTableColumnsNames.OFFLINE_USER_TABLE_NAME, null, null);
+        database.close();
+    }
 
 }

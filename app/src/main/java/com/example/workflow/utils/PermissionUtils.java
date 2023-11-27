@@ -32,40 +32,6 @@ public class PermissionUtils {
         }
     }
 
-    //////////////////////////////////////////////////////// splash screen. . . .
-    public static boolean checkLocAndPhonePermission(Context context) {
-        return ContextCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_FINE_LOCATION) + ContextCompat.checkSelfPermission(context,
-                Manifest.permission.READ_PHONE_STATE)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    ////////////////////////////////////////////////////////////// sms permission check
-    public static boolean Smspermissioncheck(Context context) {
-        //Call whatever you want
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat
-                    .checkSelfPermission(context,
-                            Manifest.permission.READ_SMS) +
-                    ContextCompat
-                            .checkSelfPermission(context,
-                                    Manifest.permission.RECEIVE_SMS)
-                    ==
-                    PackageManager.PERMISSION_GRANTED;
-        } else {
-            return true;
-        }
-    }
-
-    public static boolean checkCallPermission(Context context) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat.checkSelfPermission(context,
-                    Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return true;
-        }
-    }
 
     public static boolean checkStoragePermission(Context context) {
 
@@ -95,8 +61,7 @@ public class PermissionUtils {
     }
 
 
-    ///////////////////////////////////////////////////////////////// check call
-    /////////////////////////////////////////////////////////////////// open loc dislog
+
     public static void openPermissionDialog(final Context context, String subjuct) {
         final Dialog dialog = new Dialog(context, R.style.comm_dialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -128,51 +93,5 @@ public class PermissionUtils {
         }
 
 
-    }
-
-
-    /////// app data. . . .
-    public static boolean hasAppDetailsPermission(Context context) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AppOpsManager appOps = (AppOpsManager)
-                    context.getSystemService(Context.APP_OPS_SERVICE);
-            int mode = 0;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                        android.os.Process.myUid(), context.getPackageName());
-            }
-            return mode == AppOpsManager.MODE_ALLOWED;
-        } else {
-            return true;
-        }
-
-
-    }
-
-    ////////////////////////////////////////////////////////////// sms permission check
-    public static boolean storagePermissioncheck(Context context) {
-        //Call whatever you want
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat
-                    .checkSelfPermission(context,
-                            Manifest.permission.READ_EXTERNAL_STORAGE) +
-                    ContextCompat
-                            .checkSelfPermission(context,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    ==
-                    PackageManager.PERMISSION_GRANTED;
-        } else {
-            return true;
-        }
-    }
-
-    public static void requestStoragePermissions(Activity activity, int REQUEST_CODE_STORAGE_PERMISSION) {
-        ActivityCompat.requestPermissions(activity,
-                new String[]{
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },
-                REQUEST_CODE_STORAGE_PERMISSION);
     }
 }

@@ -17,7 +17,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:highlightedDaysLabelsColor="#00FFFF"
+            app:headerColor="@color/colorLiteBlue"
+            app:highlightedDaysLabelsColor="@color/colorPrimaryDark"
             app:eventsEnabled="true"/>
 
         <TextView

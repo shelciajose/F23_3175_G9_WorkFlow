@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.workflow.R;
+import com.example.workflow.database.OfflineDatabase;
 import com.example.workflow.fragments.OTPFragment;
 import com.example.workflow.utils.CommonFunc;
+import com.example.workflow.utils.PreferenceUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -36,13 +39,27 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.TimeUnit;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
+    private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
+    String userId ="";
+    String phoneNumber = "";
 
 
+    Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        firebaseAuth = FirebaseAuth.getInstance();
+        context = RegistrationActivity.this;
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         (findViewById(R.id.activity_req_for_mobile_no_generate_otp_button_id)).setOnClickListener(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private Dialog dialogProgress = null;
@@ -73,12 +90,14 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     {
         if (v.getId() == R.id.activity_req_for_mobile_no_generate_otp_button_id)
         {
-                    if (((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().isEmpty())
-                    {
-                        ((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).setError("Please enter mobile no");
-                    } else {
-                         checkValidUserOrNot(((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().trim());
-                            }
+            phoneNumber = ((AppCompatEditText)
+                    findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().trim();
+            if (((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().isEmpty())
+            {
+                ((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).setError("Please enter mobile no");
+            } else {
+                checkPhoneNumberExists();
+            }
 
         }
     }
@@ -93,16 +112,16 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     ////
     public void triggerFireBaseOTP()
     {
-            showProgressDialog();
-            PhoneAuthProvider.verifyPhoneNumber(
-                    PhoneAuthOptions
-                            .newBuilder(FirebaseAuth.getInstance())
-                            .setActivity(this)
-                            .setPhoneNumber("+1" + ((AppCompatEditText)
-                                    findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString())
-                            .setTimeout(60L, TimeUnit.SECONDS)
-                            .setCallbacks(onVerificationStateChangedCallbacks)
-                            .build());
+        showProgressDialog();
+        PhoneAuthProvider.verifyPhoneNumber(
+                PhoneAuthOptions
+                        .newBuilder(FirebaseAuth.getInstance())
+                        .setActivity(this)
+                        .setPhoneNumber("+1" + ((AppCompatEditText)
+                                findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString())
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setCallbacks(onVerificationStateChangedCallbacks)
+                        .build());
     }
 
 
@@ -127,6 +146,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     mResendToken = forceResendingToken;
                     Bundle bundle = new Bundle();
                     bundle.putString("mVerificationId", mVerificationId);
+                    bundle.putString("userID", userId);
                     bundle.putString("mobno", ((AppCompatEditText)
                             findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString());
                     attachFragment(new OTPFragment(), false, "Verify OTP", bundle);
@@ -142,7 +162,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            reqForLoginAfterOTPMatched();
+                            getUserDetailsById(context, userId);
                         } else {
                             // Sign in failed, display a message and update the UI
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -154,6 +174,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
     }
+
 
 
     private void attachFragment(Fragment fragment, boolean isAddToBackStack, String tag, Bundle bundle) {
@@ -168,38 +189,79 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         fragmentTransaction.commit();
     }
 
-    private void checkValidUserOrNot(String Phone) {
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference userNameRef = rootRef.child("users").child("101").child("phoneNumber");
-        Task<DataSnapshot> num = rootRef.child("users").child("101").child("phoneNumber").get();
+    private void checkPhoneNumberExists() {
+        DatabaseReference userRef = databaseReference.child("users");
+        userRef.orderByChild("phoneNumber").equalTo(((AppCompatEditText) findViewById(R.id.activity_req_for_mobile_no_editext_id)).getText().toString().trim()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Phone number exists, send OTP
 
-        ValueEventListener eventListener = new ValueEventListener() {
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if(!dataSnapshot.exists()) {
-                        dismissProgressDialog();
-                        CommonFunc.commonDialog(RegistrationActivity.this, getString(R.string.alert),
-                                "User Doesn't Exist", false,
-                                RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base));
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        userId = snapshot.getKey();
+                        // userId is the user ID based on the provided phone number
+                        // You can use this ID as needed
                     }
-                    else{
-                        triggerFireBaseOTP();
-                    }
+                    triggerFireBaseOTP();
+                } else {
+                    // Phone number doesn't exist
+                    Toast.makeText(RegistrationActivity.this, "User with this phone number doesn't exist", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e(TAG, "DatabaseError: " + databaseError.getMessage());
+                Toast.makeText(RegistrationActivity.this, "Error checking phone number: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+    public void getUserDetailsById(final Context context, final String userId) {
+        DatabaseReference userRef = databaseReference.child("users").child(userId);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Retrieve user details
+                    String address = dataSnapshot.child("Address").getValue(String.class);
+                    String firstName = dataSnapshot.child("firstName").getValue(String.class);
+                    String lastName = dataSnapshot.child("lastName").getValue(String.class);
+                    String userName = dataSnapshot.child("userName").getValue(String.class);
+                    String department = dataSnapshot.child("Dept").getValue(String.class);
+                    String email = dataSnapshot.child("emailAddress").getValue(String.class);
+                    // Add more fields as needed
+
+                    // Now you can use the retrieved details
+                    // For example, log the details
+                    Log.d("UserDetails", "Address: " + address);
+                    Log.d("UserDetails", "FirstName: " + firstName);
+
+                    PreferenceUtils.addUserDetailsToPreferences(context, phoneNumber, email, firstName + " " + lastName, userId,
+                            department, address, userName);
+
+                    new OfflineDatabase(context).addUserDetailsToDB(userId, userName, department, phoneNumber, email, address, firstName, lastName);
+
+                    reqForLoginAfterOTPMatched();
+
+                } else {
+                    Toast.makeText(context, "Sorry!!! User Details not fund", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getMessage());
-                CommonFunc.commonDialog(RegistrationActivity.this, getString(R.string.alert),
-                        databaseError.getMessage(), false,
-                        RegistrationActivity.this, findViewById(R.id.req_for_mobile_content_base));
+                // Handle errors
             }
-        };
-        userNameRef.addListenerForSingleValueEvent(eventListener);
+        });
     }
 
     public void reqForLoginAfterOTPMatched() {
-
         startActivity(new Intent(RegistrationActivity.this, NavigationActivity.class));
+        finish();
 
     }
 

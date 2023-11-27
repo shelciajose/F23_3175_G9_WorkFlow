@@ -7,10 +7,10 @@
     <color name="colorTransparent">#00FFFFFF</color>
     <color name="red">#8B0000</color>
     <color name="logo_colour">#1caf9a</color>
-    <color name="theme_main_color_blue">#2A78F1</color>
-    <color name="colorLiteBlue">#D2B5D2E1</color>
+    <color name="theme_main_color_blue">#D2B5D2E1</color>
+    <color name="colorLiteBlue">#D21D5D7E</color>
     <color name="gray">#c3c3c3</color>
-    <color name="theme_secondary_color_blue">#3168BC</color>
+    <color name="theme_secondary_color_blue">#D2B5D2E1</color>
     <color name="colorPrimaryDark">#024265</color>
     <color name="colorAccent">#0274B2</color>
     <color name="chat_right">#03AC13</color>

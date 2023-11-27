@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.workflow.R;
+import com.example.workflow.utils.PreferenceUtils;
 
 public class SplashScreen extends AppCompatActivity {
 
@@ -25,7 +26,13 @@ public class SplashScreen extends AppCompatActivity {
                 @Override
                 public void run() {
                     dismissProgressDialog();
-                    startActivity(new Intent(SplashScreen.this, RegistrationActivity.class));
+                    if(!PreferenceUtils.checkUserisLogedin(SplashScreen.this)) {
+                        startActivity(new Intent(SplashScreen.this, RegistrationActivity.class));
+                    }
+                    else {
+                        startActivity(new Intent(SplashScreen.this, NavigationActivity.class));
+                    }
+                    finish();
                 }
             }, 3000);
         }
@@ -46,23 +53,23 @@ public class SplashScreen extends AppCompatActivity {
             }
             if (!dialog.isShowing())
                 dialog.show();
-            }
+        }
         catch (Exception e) {
             e.printStackTrace();
-            }
         }
+    }
 
-        public void dismissProgressDialog() {
-            try {
-                if (dialog != null) {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    dialog = null;
+    public void dismissProgressDialog() {
+        try {
+            if (dialog != null) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                dialog = null;
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+    }
 }

@@ -5,21 +5,18 @@
     tools:context=".fragments.ProfileFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/base_background_layer_style">
+    android:background="@color/colorLiteBlue">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/base_background_screen" />
 
-    <TextView
+    <ImageButton
+        android:id="@+id/edit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:text="@string/profile"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:src="@drawable/ic_edit"
+        android:background="@color/colorTransparent"
+        android:layout_gravity="end"
+        android:layout_margin="10dp"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,6 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
                 android:orientation="vertical"
                 android:paddingBottom="30dp">
 
@@ -48,10 +46,22 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
+                    android:textStyle="italic"
                     android:text="@string/Nametxt" />
 
+                <TextView
+                    android:id="@+id/profileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Test User"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
                 <EditText
-                    android:id="@+id/settingCustomerName"
+                    android:id="@+id/edit_profileName"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
@@ -59,10 +69,11 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/setting_pg_edittext_design"
-                    android:clickable="false"
+
                     android:cursorVisible="false"
                     android:ems="10"
-                    android:focusable="false"
+                    android:visibility="gone"
+
                     android:gravity="center_vertical"
                     android:hint="@string/Namehint"
                     android:inputType="textPersonName"
@@ -76,10 +87,22 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
+                    android:textStyle="italic"
                     android:text="@string/UserIdtxt" />
 
-                <EditText
+                <TextView
                     android:id="@+id/profileUserID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Test User"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/edit_profileUserID"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
@@ -87,10 +110,11 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/setting_pg_edittext_design"
-                    android:clickable="false"
+
                     android:cursorVisible="false"
                     android:ems="10"
-                    android:focusable="false"
+                    android:visibility="gone"
+
                     android:gravity="center_vertical"
                     android:hint="@string/UserIdHint"
                     android:inputType="textPersonName"
@@ -104,10 +128,24 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
+                    android:textStyle="italic"
                     android:text="@string/DeptTxt" />
 
+
+                <TextView
+                    android:id="@+id/profileDepartment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Test User"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
+
                 <EditText
-                    android:id="@+id/settingDepartment"
+                    android:id="@+id/edit_profileDepartment"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
@@ -115,10 +153,11 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/setting_pg_edittext_design"
-                    android:clickable="false"
+
+                    android:visibility="gone"
                     android:cursorVisible="false"
                     android:ems="10"
-                    android:focusable="false"
+
                     android:gravity="center_vertical"
                     android:hint="@string/DeptHint"
                     android:inputType="textPersonName"
@@ -132,11 +171,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
+                    android:textStyle="italic"
                     android:layout_marginEnd="20dp"
                     android:text="@string/Phonetxt" />
 
+                <TextView
+                    android:id="@+id/profilePhoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Test User"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
                 <EditText
-                    android:id="@+id/settingPhoneNumber"
+                    android:id="@+id/edit_PhoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
@@ -144,10 +195,11 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/setting_pg_edittext_design"
-                    android:clickable="false"
+
                     android:cursorVisible="false"
                     android:ems="10"
-                    android:focusable="false"
+                    android:visibility="gone"
+
                     android:gravity="center_vertical"
                     android:hint="@string/Phonehint"
                     android:inputType="textPersonName"
@@ -161,10 +213,22 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
+                    android:textStyle="italic"
                     android:text="@string/EmaiTxt" />
 
+                <TextView
+                    android:id="@+id/profileEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Test User"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
                 <EditText
-                    android:id="@+id/settingEmail"
+                    android:id="@+id/edit_Email"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_gravity="center_vertical"
@@ -172,10 +236,11 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/setting_pg_edittext_design"
-                    android:clickable="false"
+
                     android:cursorVisible="false"
                     android:ems="10"
-                    android:focusable="false"
+                    android:visibility="gone"
+
                     android:gravity="center_vertical"
                     android:hint="@string/EmailHint"
                     android:inputType="textPersonName"
@@ -189,21 +254,34 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
+                    android:textStyle="italic"
                     android:text="@string/AddressTxt" />
 
+                <TextView
+                    android:id="@+id/profileAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:text="Test User"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
                 <EditText
-                    android:id="@+id/settingAddress"
+                    android:id="@+id/edit_Address"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="20dp"
+                    android:visibility="gone"
                     android:background="@drawable/setting_pg_edittext_design"
-                    android:clickable="false"
+
                     android:cursorVisible="false"
                     android:ems="10"
-                    android:focusable="false"
+
                     android:gravity="center_vertical"
                     android:hint="@string/AddressHint"
                     android:padding="10dp"
@@ -211,13 +289,30 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/button_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/fragment_verify_otp_submit_button_id"
-                        android:layout_width="match_parent"
+                        android:id="@+id/profileCancel_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="22dp"
+                        android:background="@drawable/button_rounded_blue"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:text="@string/cancel_txt"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/profileUpdate_btn"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="22dp"
                         android:background="@drawable/button_rounded_blue"

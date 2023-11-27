@@ -8,6 +8,8 @@
     <string name="OtpVerification">OTP Verification</string>
     <string name="EnterotpTxt">Enter 6 digit OTP</string>
     <string name="submit_txt">Submit</string>
+    <string name="update_txt">Update</string>
+    <string name="cancel_txt">Cancel</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="WelcomeTo">WELCOME TO</string>
     <string name="justErrorCode">EC </string>

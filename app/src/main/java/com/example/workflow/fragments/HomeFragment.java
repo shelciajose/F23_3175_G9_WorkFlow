@@ -372,6 +372,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         dialog.dismiss();
                         if (PermissionUtils.checkLoactionPermission(getActivity())) {
                             connectToGoogleApiClientAndGetTheAddress(true);
+                           // showProgressDialog();
                         } else {
                             PermissionUtils.openPermissionDialog(getActivity(), "Please grant location permission");
                         }
@@ -567,6 +568,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             .setText(CHECKING_OUT_BUTTON_NAME);
                     PreferenceUtils.setCheckInOutServiceRunning(getActivity(), true, "cout");
                 }
+
             } else if (res.equals(CHECK_IN_BUTTON_NAME)) {
                 CommonFunc.commonDialog(getActivity(), getString(R.string.alert), "Check-in under process please wait..",
                         false,
@@ -583,30 +585,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void OnGpsRequestResponseForHomeFragment(int resultCode, int reqCode) {
-        if (resultCode == RESULT_OK) {
-
-            if (reqCode == ConstantUtils.REQUEST_CHECK_SETTINGS_HOME_FRAGMENT_AT_THE_TIME_OF_CHECK_IN_OUT) {
-                showProgressDialog();
-                callServiceRunningClass();
-            } else {
-                dismissProgressDialog();
-            }
-
-
-        } else if (resultCode == RESULT_CANCELED) {
-            dismissProgressDialog();
-            if (reqCode == ConstantUtils.REQUEST_CHECK_SETTINGS_HOME_FRAGMENT_AT_THE_TIME_OF_CHECK_IN_OUT) {
-                checkForLocationSettings(true);
-            } else if (reqCode == ConstantUtils.REQUEST_CHECK_SETTINGS_HOME_FRAGMENT_AT_THE_TIME_OF_MY_VISIT) {
-                checkForLocationSettings(false);
-            }
-            Toast.makeText(getActivity(), "Please grant Gps access by clicking OK in the shown dialog", Toast.LENGTH_LONG).show();
-        } else {
-            dismissProgressDialog();
-            Toast.makeText(getActivity(), "Device gps is not responding.. Please refresh your device.. Error code 92", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public void onStop() {
@@ -615,14 +593,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (timer != null)
             timer.cancel();
     }
-
-
-    public void performCheckOut() {
-        if (isAdded()) {
-            ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                    .setText(CHECK_IN_BUTTON_NAME);
-        }
-    }
-
 
 }
