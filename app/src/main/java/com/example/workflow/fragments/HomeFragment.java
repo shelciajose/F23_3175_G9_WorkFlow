@@ -510,6 +510,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         });
         //
 
+
     }
 
     private void callServiceRunningClass() {
