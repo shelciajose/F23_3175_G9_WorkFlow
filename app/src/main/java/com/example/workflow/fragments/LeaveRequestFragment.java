@@ -4,8 +4,11 @@ import static com.example.workflow.utils.ConstantUtils.KEY_DEPARTMENT;
 import static com.example.workflow.utils.ConstantUtils.KEY_FIRST_NAME;
 import static com.example.workflow.utils.ConstantUtils.KEY_LAST_NAME;
 import static com.example.workflow.utils.ConstantUtils.KEY_LEAVE_END_DATE;
+import static com.example.workflow.utils.ConstantUtils.KEY_LEAVE_REQUEST_TABLE;
 import static com.example.workflow.utils.ConstantUtils.KEY_LEAVE_START_DATE;
+import static com.example.workflow.utils.ConstantUtils.KEY_STATUS;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER;
+import static com.example.workflow.utils.ConstantUtils.KEY_USER_ID;
 import static com.example.workflow.utils.ConstantUtils.MAIL_ADDRESS_CC;
 import static com.example.workflow.utils.ConstantUtils.MAIL_ADDRESS_MANAGER;
 import static com.example.workflow.utils.ConstantUtils.MAIL_EMPLOYER;
@@ -37,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -56,6 +60,7 @@ public class LeaveRequestFragment extends Fragment {
     String department;
     EditText editTxtLeaveStartDate;
     EditText editTxtLeaveEndDate;
+
     public LeaveRequestFragment() {
         // Required empty public constructor
     }
@@ -103,6 +108,9 @@ public class LeaveRequestFragment extends Fragment {
                         HashMap<String, String> requestUser = new HashMap<>();
                         for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             LeaveRequestModel leaveRequestModel = dataSnapshot.getValue(LeaveRequestModel.class);
+                            System.out.println(leaveRequestModel.getFirstName());
+                            System.out.println(leaveRequestModel.getUserId());
+                            System.out.println(userId);
                             if(leaveRequestModel.getUserId() != null) {
                                 if(leaveRequestModel.getUserId().equals(userId)) {
                                     firstName = leaveRequestModel.getFirstName();
@@ -118,6 +126,7 @@ public class LeaveRequestFragment extends Fragment {
 
                                     if(sendLeaveRequest(requestUser)) {
                                         Toast.makeText(view.getContext(), "Success Leave Request", Toast.LENGTH_SHORT).show();
+                                        createLeaveRequestRecord(requestUser);
                                     } else {
                                         Toast.makeText(view.getContext(), "Fail Leave Request, Please try again", Toast.LENGTH_SHORT).show();
                                     }
@@ -219,5 +228,21 @@ public class LeaveRequestFragment extends Fragment {
         }
 
         return mailFlag;
+    }
+
+    private void createLeaveRequestRecord(HashMap<String, String> user) {
+        if(userId == null) {
+            firebaseAuth = FirebaseAuth.getInstance();
+            userId = firebaseAuth.getCurrentUser().getUid();
+        }
+        Map<String, Object> leaveRequest = new HashMap<>();
+        leaveRequest.put(KEY_USER_ID, userId);
+        leaveRequest.put(KEY_LEAVE_START_DATE, user.get(KEY_LEAVE_START_DATE));
+        leaveRequest.put(KEY_LEAVE_END_DATE, user.get(KEY_LEAVE_END_DATE));
+        leaveRequest.put(KEY_STATUS, 0);
+
+        dbref = FirebaseDatabase.getInstance().getReference();
+        dbref.child(KEY_LEAVE_REQUEST_TABLE).push().setValue(leaveRequest);
+
     }
 }
