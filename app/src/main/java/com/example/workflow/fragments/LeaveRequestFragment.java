@@ -89,6 +89,7 @@ public class LeaveRequestFragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance();
         dbref = firebaseDatabase.getReference(KEY_USER);
         userId = firebaseAuth.getCurrentUser().getUid();
+        status = "";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

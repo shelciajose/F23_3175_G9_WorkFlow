@@ -17,6 +17,7 @@
             android:id="@+id/txtViewTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/txtViewMessage"
             android:text="@string/txtTimeRight"
             android:textSize="12sp" />
 
@@ -27,7 +28,7 @@
             android:layout_alignParentEnd="true"
             android:layout_toEndOf="@id/txtViewTime"
             android:background="@color/chat_right"
-            android:padding="15dp"
+            android:padding="10dp"
             android:text="@string/txtMessageRight"
             android:textColor="@color/chat_text"
             android:textSize="16sp" />

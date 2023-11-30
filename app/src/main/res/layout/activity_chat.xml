@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:backgroundTint="#638DFF"
     tools:context=".activities.ChatActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolBarChat"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize">
-<!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
+        <!--        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/layoutMessageInput"
-        android:layout_below="@id/toolBarChat" />
+        android:layout_below="@id/toolBarChat"
+        android:background="#638DFF" />
 
     <LinearLayout
         android:id="@+id/layoutMessageInput"
