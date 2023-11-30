@@ -96,12 +96,6 @@ public class ConstantUtils {
     public static final String KEY_USER_NAME = "userName";
     public static final String KEY_USER_ID = "userId";
     public static final String KEY_IMAGE = "image";
-    public static final String KEY_IMAGE_CHAT = "imageChat";
-    public static final String KEY_ONLINE_STATUS = "onlineStatus";
-    public static final String KEY_PROCESSING = "processing";
-    public static final String KEY_PROCESSING_CHAT = "processingChat";
-    public static final String KEY_ONLINE = "online";
-    public static final String KEY_OFFLINE = "offline";
     public static final String KEY_CHAT = "chat";
     public static final String KEY_CHAT_LIST = "chatList";
     public static final String KEY_DATE_FORMAT_CHAT = "dd/MM/yyyy hh:mm aa";
@@ -120,7 +114,10 @@ public class ConstantUtils {
 
     public static final String KEY_FIRST_NAME = "firstName";
     public static final String KEY_LAST_NAME ="lastName";
-    public static final String KEY_DEPARTMENT = "dept";
+    public static final String KEY_DEPARTMENT = "Dept";
+    public static final String KEY_PHONE_NUMBER = "phoneNumber";
+    public static final String KEY_EMAIL_ADDRESS = "emailAddress";
+    public static final String KEY_ADDRESS = "Address";
     public static final String KEY_LEAVE_START_DATE = "leaveStartDate";
     public static final String KEY_LEAVE_END_DATE = "leaveEndDate";
     public static final String MAIL_ADDRESS_MANAGER = "workflow.g9.manager@outlook.com";

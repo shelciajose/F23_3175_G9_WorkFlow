@@ -1,5 +1,13 @@
 package com.example.workflow.fragments;
 
+import static com.example.workflow.utils.ConstantUtils.KEY_ADDRESS;
+import static com.example.workflow.utils.ConstantUtils.KEY_DEPARTMENT;
+import static com.example.workflow.utils.ConstantUtils.KEY_EMAIL_ADDRESS;
+import static com.example.workflow.utils.ConstantUtils.KEY_FIRST_NAME;
+import static com.example.workflow.utils.ConstantUtils.KEY_LAST_NAME;
+import static com.example.workflow.utils.ConstantUtils.KEY_PHONE_NUMBER;
+import static com.example.workflow.utils.ConstantUtils.KEY_USER;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,8 +29,16 @@ import com.example.workflow.R;
 import com.example.workflow.database.OfflineDatabase;
 import com.example.workflow.database.offlineModels.EmployeeData;
 import com.example.workflow.models.UserDetails;
+import com.example.workflow.models.UserModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,6 +63,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     TextView empadd;
 
     LinearLayout buttonLayout;
+    //Start change by Takumi
+    String userId;
+    FirebaseAuth firebaseAuth;
+    //End
 
     private DatabaseReference usersRef;
 
@@ -92,6 +112,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         ((AppCompatButton) viewFragment.findViewById(R.id.profileCancel_btn)).setOnClickListener(this);
         ((AppCompatButton) viewFragment.findViewById(R.id.profileUpdate_btn)).setOnClickListener(this);
 
+        //Start change by Takumi
+        firebaseAuth = FirebaseAuth.getInstance();
+        userId = firebaseAuth.getCurrentUser().getUid();
+        //End
+
         try {
             userDetails = new OfflineDatabase(getActivity()).getUser().get(0);
         }
@@ -99,7 +124,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             e.printStackTrace();
         }
 
-        usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        //Start Changed by Takumi
+        //usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        usersRef = FirebaseDatabase.getInstance().getReference(KEY_USER);
+        //End
 
         emname.setText(userDetails.getfName() + " " + userDetails.getlName());
         edt_name.setText(userDetails.getfName() + " " + userDetails.getlName());
@@ -212,16 +240,45 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     }
 
     private void updateUserInfo(String userId, String newfName, String newlName, String newEmail, String newPhoneNumber, String newAddress, String newDept) {
-        DatabaseReference userRef = usersRef.child(userId);
+        //Start Changed by Takumi
+        //DatabaseReference userRef = usersRef.child(userId);
+        //DatabaseReference userRef = usersRef.child(userId);
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put(KEY_FIRST_NAME, newfName);
+        userInfo.put(KEY_LAST_NAME, newlName);
+        userInfo.put(KEY_PHONE_NUMBER, newPhoneNumber);
+        userInfo.put(KEY_ADDRESS, newAddress);
+        userInfo.put(KEY_DEPARTMENT, newDept);
+        userInfo.put(KEY_EMAIL_ADDRESS, newEmail);
+
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    UserModel user = dataSnapshot.getValue(UserModel.class);
+                    System.out.println(userId);
+                    System.out.println(user.getUserId());
+                    if(user.getUserId().equals(userId)) {
+                        usersRef.child(dataSnapshot.getKey()).updateChildren(userInfo);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         // Update the user details in the Realtime Database
-        userRef.child("firstName").setValue(newfName);
-        userRef.child("lastName").setValue(newlName);
-        userRef.child("emailAddress").setValue(newEmail);
-        userRef.child("phoneNumber").setValue(newPhoneNumber);
-        userRef.child("Address").setValue(newAddress);
-        userRef.child("Dept").setValue(newDept);
-
+        //userRef.child("firstName").setValue(newfName);
+        //userRef.child("lastName").setValue(newlName);
+        //userRef.child("emailAddress").setValue(newEmail);
+        //userRef.child("phoneNumber").setValue(newPhoneNumber);
+        //userRef.child("Address").setValue(newAddress);
+        //userRef.child("Dept").setValue(newDept);
+        //End
 
         userDetails.setAddress(newAddress);
         userDetails.setfName(newfName);
@@ -262,8 +319,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                                     if(edt_email.getText().toString().trim().length()>3 && edt_email.getText().toString().contains("@")){
                                         if(edt_dept.getText().toString().trim().length()>2){
                                             if(edt_address.getText().toString().trim().length()>3){
-                                                updateUserInfo(userDetails.getUserID(), firstName,lastName,edt_email.getText().toString().trim(), edt_phone.getText().toString().trim(),
+                                                //Start change by Takumi
+                                                //updateUserInfo(userDetails.getUserID(), firstName,lastName,edt_email.getText().toString().trim(), edt_phone.getText().toString().trim(),
+                                                        //edt_address.getText().toString().trim(), edt_dept.getText().toString().trim());
+                                                updateUserInfo(userId, firstName, lastName, edt_email.getText().toString().trim(), edt_phone.getText().toString().trim(),
                                                         edt_address.getText().toString().trim(), edt_dept.getText().toString().trim());
+                                                //End
                                             }
                                             else {
                                                 edt_address.setError("Please enter proper address");
