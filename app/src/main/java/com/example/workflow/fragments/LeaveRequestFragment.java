@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment;
 
 import android.app.DatePickerDialog;
 import android.os.StrictMode;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +69,7 @@ public class LeaveRequestFragment extends Fragment {
     EditText editTxtLeaveStartDate;
     EditText editTxtLeaveEndDate;
     TextView txtViewRequestStatus;
+    Button btnLeaveRequestConfirm;
 
     public LeaveRequestFragment() {
         // Required empty public constructor
@@ -101,6 +101,7 @@ public class LeaveRequestFragment extends Fragment {
         editTxtLeaveEndDate.setOnClickListener(datePicker);
 
         txtViewRequestStatus = view.findViewById(R.id.txtViewRequestStatus);
+        btnLeaveRequestConfirm = view.findViewById(R.id.btnLeaveRequestConfirm);
         getRequestStatus();
 
         Button btnSendLeaveRequest = view.findViewById(R.id.btnSendLeaveRequest);
@@ -338,9 +339,35 @@ public class LeaveRequestFragment extends Fragment {
                 if(status.length() != 0) {
                     txtViewRequestStatus.setVisibility(View.VISIBLE);
                     txtViewRequestStatus.setText("Your request is " + status + ".");
+                    btnLeaveRequestConfirm.setVisibility(View.VISIBLE);
+                    btnLeaveRequestConfirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dbref = FirebaseDatabase.getInstance().getReference(KEY_LEAVE_REQUEST_TABLE).child(userId);
+                            dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        LeaveRequestModel leaveRequest = dataSnapshot.getValue(LeaveRequestModel.class);
+                                        if (userId.equals(leaveRequest.getUserId())) {
+                                            Map<String, Object> map = new HashMap<>();
+                                            map.put(KEY_STATUS, 0);
+                                            dbref.child(dataSnapshot.getKey().toString()).updateChildren(map);
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                            });
+                            txtViewRequestStatus.setVisibility(View.GONE);
+                            btnLeaveRequestConfirm.setVisibility(View.GONE);
+                        }
+                    });
                 } else{
                     txtViewRequestStatus.setVisibility(View.GONE);
                     txtViewRequestStatus.setText("");
+                    btnLeaveRequestConfirm.setVisibility(View.GONE);
                 }
             }
 

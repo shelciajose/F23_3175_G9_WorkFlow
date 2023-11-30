@@ -68,7 +68,10 @@
     <string name="txtCalendarTitle">Calendar</string>
     <string name="txtWorkSchedule">Work Schedule</string>
     <string name="editTxt">Edit Profile</string>
-    <string name="txtRequestStatus">Request Status</string>
+    <string name="txtRequestStatus"></string>
+    <string name="txtApprove">Approve</string>
+    <string name="txtDeny">Deny</string>
+    <string name="txtConfirm">Confirm</string>
 
 
 </resources>
