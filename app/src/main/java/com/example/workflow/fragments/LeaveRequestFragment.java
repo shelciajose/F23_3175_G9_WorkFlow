@@ -15,6 +15,7 @@ import static com.example.workflow.utils.ConstantUtils.MAIL_EMPLOYER;
 import static com.example.workflow.utils.ConstantUtils.MAIL_PW;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,21 +23,26 @@ import androidx.fragment.app.Fragment;
 
 import android.app.DatePickerDialog;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workflow.models.LeaveRequestModel;
 import com.example.workflow.R;
+import com.example.workflow.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,8 +64,12 @@ public class LeaveRequestFragment extends Fragment {
     String firstName;
     String lastName;
     String department;
+    String status;
+    LocalDate sDate;
+    LocalDate eDate;
     EditText editTxtLeaveStartDate;
     EditText editTxtLeaveEndDate;
+    TextView txtViewRequestStatus;
 
     public LeaveRequestFragment() {
         // Required empty public constructor
@@ -90,12 +100,25 @@ public class LeaveRequestFragment extends Fragment {
         editTxtLeaveStartDate.setOnClickListener(datePicker);
         editTxtLeaveEndDate.setOnClickListener(datePicker);
 
+        txtViewRequestStatus = view.findViewById(R.id.txtViewRequestStatus);
+        getRequestStatus();
+
         Button btnSendLeaveRequest = view.findViewById(R.id.btnSendLeaveRequest);
         btnSendLeaveRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String startDate = editTxtLeaveStartDate.getText().toString().trim();
                 String endDate = editTxtLeaveEndDate.getText().toString().trim();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    sDate = LocalDate.parse(convertStringDate(startDate));
+                    eDate = LocalDate.parse(convertStringDate(endDate));
+
+                    if(sDate.isAfter(eDate)) {
+                        Toast.makeText(view.getContext(), "Invalid date", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
 
 //                if(startDate.length() == 0 || endDate.length() == 0) {
 //                    Toast.makeText(view.getContext(), "Please enter both date", Toast.LENGTH_SHORT).show();
@@ -107,15 +130,12 @@ public class LeaveRequestFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         HashMap<String, String> requestUser = new HashMap<>();
                         for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            LeaveRequestModel leaveRequestModel = dataSnapshot.getValue(LeaveRequestModel.class);
-                            System.out.println(leaveRequestModel.getFirstName());
-                            System.out.println(leaveRequestModel.getUserId());
-                            System.out.println(userId);
-                            if(leaveRequestModel.getUserId() != null) {
-                                if(leaveRequestModel.getUserId().equals(userId)) {
-                                    firstName = leaveRequestModel.getFirstName();
-                                    lastName = leaveRequestModel.getLastName();
-                                    department = leaveRequestModel.getDept();
+                            UserModel user = dataSnapshot.getValue(UserModel.class);
+                            if(user.getUserId() != null) {
+                                if(user.getUserId().equals(userId)) {
+                                    firstName = user.getFirstName();
+                                    lastName = user.getLastName();
+                                    department = user.getDept();
 
                                     requestUser = new HashMap<>();
                                     requestUser.put(KEY_FIRST_NAME, firstName);
@@ -146,7 +166,6 @@ public class LeaveRequestFragment extends Fragment {
     }
 
     private class DatePicker implements View.OnClickListener {
-
         @Override
         public void onClick(View view) {
             Calendar calendar = Calendar.getInstance();
@@ -171,7 +190,22 @@ public class LeaveRequestFragment extends Fragment {
             }, year, month, day);
             datePickerDialog.show();
         }
+    }
 
+    private String convertStringDate(String date) {
+
+        String[] arr = date.split("-");
+        if (arr[1].length() == 1) {
+            arr[1] = "0" + arr[1];
+        }
+
+        if (arr[0].length() == 1) {
+            arr[0] = "0" + arr[0];
+        }
+
+        date = arr[2] + "-" + arr[1] + "-" + arr[0];
+
+        return date;
     }
 
     private boolean sendLeaveRequest(HashMap<String, String> requestUser) {
@@ -231,18 +265,89 @@ public class LeaveRequestFragment extends Fragment {
     }
 
     private void createLeaveRequestRecord(HashMap<String, String> user) {
-        if(userId == null) {
+        Map<String, Object> leaveRequest = new HashMap<>();
+
+        if (userId == null) {
             firebaseAuth = FirebaseAuth.getInstance();
             userId = firebaseAuth.getCurrentUser().getUid();
         }
-        Map<String, Object> leaveRequest = new HashMap<>();
-        leaveRequest.put(KEY_USER_ID, userId);
-        leaveRequest.put(KEY_LEAVE_START_DATE, user.get(KEY_LEAVE_START_DATE));
-        leaveRequest.put(KEY_LEAVE_END_DATE, user.get(KEY_LEAVE_END_DATE));
-        leaveRequest.put(KEY_STATUS, 0);
 
-        dbref = FirebaseDatabase.getInstance().getReference();
-        dbref.child(KEY_LEAVE_REQUEST_TABLE).push().setValue(leaveRequest);
+        DatabaseReference dbLeave = FirebaseDatabase.getInstance().getReference(KEY_LEAVE_REQUEST_TABLE).child(userId);
+        dbLeave.addListenerForSingleValueEvent(new ValueEventListener() {
 
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean flag = false;
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    LeaveRequestModel leaveRequestModel = dataSnapshot.getValue(LeaveRequestModel.class);
+                    if (leaveRequestModel.getUserId().equals(userId)) {
+                        leaveRequest.put(KEY_LEAVE_START_DATE, user.get(KEY_LEAVE_START_DATE));
+                        leaveRequest.put(KEY_LEAVE_END_DATE, user.get(KEY_LEAVE_END_DATE));
+                        leaveRequest.put(KEY_STATUS, 1);
+                        dbLeave.child(dataSnapshot.getKey().toString()).updateChildren(leaveRequest);
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (flag == false) {
+                    leaveRequest.clear();
+                    leaveRequest.put(KEY_USER_ID, userId);
+                    leaveRequest.put(KEY_LEAVE_START_DATE, user.get(KEY_LEAVE_START_DATE));
+                    leaveRequest.put(KEY_LEAVE_END_DATE, user.get(KEY_LEAVE_END_DATE));
+                    leaveRequest.put(KEY_STATUS, 1);
+                    dbLeave.push().setValue(leaveRequest);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getRequestStatus() {
+        if (userId == null) {
+            firebaseAuth = FirebaseAuth.getInstance();
+            userId = firebaseAuth.getCurrentUser().getUid();
+        }
+
+        DatabaseReference dbLeave = FirebaseDatabase.getInstance().getReference(KEY_LEAVE_REQUEST_TABLE).child(userId);
+        dbLeave.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    LeaveRequestModel leaveRequestModel = dataSnapshot.getValue(LeaveRequestModel.class);
+                    switch(leaveRequestModel.getStatus()) {
+                        case 1:
+                            status = "Proceeding";
+                            break;
+                        case 2:
+                            status = "Approved";
+                            break;
+                        case 3:
+                            status = "Denied";
+                            break;
+                        default:
+                            status = "";
+                            break;
+                    }
+                }
+
+                if(status.length() != 0) {
+                    txtViewRequestStatus.setVisibility(View.VISIBLE);
+                    txtViewRequestStatus.setText("Your request is " + status + ".");
+                } else{
+                    txtViewRequestStatus.setVisibility(View.GONE);
+                    txtViewRequestStatus.setText("");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
