@@ -88,19 +88,9 @@ public class ChatListFragment extends Fragment {
                 usersList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     UserModel user = dataSnapshot.getValue(UserModel.class);
-                    if (userOfChatList.size() == 0) {
-                        if(user.getUserId() != null) {
-                            System.out.println("From model" + user.getUserId());
-                            System.out.println(userId);
-                            if (user.getUserId().equals(userId) == false) {
-                                usersList.add(user);
-                            }
-                        }
-                    } else {
-                        for (String userIdOfChatList : userOfChatList) {
-                            if (user.getUserId() != null && user.getUserId().equals(userIdOfChatList)) {
-                                usersList.add(user);
-                            }
+                    if(user.getUserId() != null) {
+                        if(user.getUserId().equals(userId) == false) {
+                            usersList.add(user);
                         }
                     }
 
@@ -152,5 +142,9 @@ public class ChatListFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    public interface RecyclerViewClickListener {
+        public void listClick(View v, int position);
     }
 }
