@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +66,8 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        getSupportActionBar().hide();
+
         imgViewProfile = findViewById(R.id.iconProfileChat);
         txtViewReceiverName = findViewById(R.id.txtViewReceiverNameChat);
         editTxtMessage = findViewById(R.id.editTxtMessage);
@@ -105,18 +108,6 @@ public class ChatActivity extends AppCompatActivity {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     receiverUserName = String.valueOf(dataSnapshot.child(KEY_USER_NAME).getValue());
                     iconUrl = String.valueOf(dataSnapshot.child(KEY_IMAGE).getValue());
-//                    if(processing.equals(userId)) {
-//                        txtViewOnlineStatus.setText("Typing....");
-//                    } else {
-//                        if(onlineStatus.equals(key.KEY_ONLINE)) {
-//                            txtViewOnlineStatus.setText(onlineStatus);
-//                        } else {
-//                            Calendar calendar = Calendar.getInstance();
-//                            calendar.setTimeInMillis(Long.parseLong(onlineStatus));
-//                            String timeData = DateFormat.format(key.KEY_DATE_FORMAT_CHAT, calendar).toString();
-//                            txtViewOnlineStatus.setText("Last Seen:" + timeData);
-//                        }
-//                    }
                     txtViewReceiverName.setText(receiverUserName);
                     try {
                         Glide.with(ChatActivity.this).load(image).placeholder(R.drawable.account_icon).into(imgViewProfile);
