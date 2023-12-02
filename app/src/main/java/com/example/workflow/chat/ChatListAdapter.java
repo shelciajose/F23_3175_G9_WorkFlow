@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +25,6 @@ import java.util.List;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Myholder>{
     FirebaseDatabase firebaseDatabase;
     Context context;
-    String receiverUserId;
     String listUserName;
     String iconUrl;
     String lastMessage;

@@ -6,7 +6,7 @@ public class UserModel {
     private String Address;
     private String Dept;
     private String emailAddress;
-    private String phonenumber;
+    private String phoneNumber;
     private String userName;
 
     private String userId;
@@ -19,7 +19,7 @@ public class UserModel {
         Address = address;
         Dept = dept;
         this.emailAddress = emailAddress;
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phonenumber;
         this.userName = userName;
         this.userId = userId;
     }
@@ -65,11 +65,11 @@ public class UserModel {
     }
 
     public String getPhonenumber() {
-        return phonenumber;
+        return phoneNumber;
     }
 
     public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+        this.phoneNumber = phonenumber;
     }
 
     public String getUserName() {
@@ -87,41 +87,4 @@ public class UserModel {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-    //    private String userName;
-//    private String userId;
-//    private String emailAddress;
-////    private String image;
-//
-//    public UserModel(){}
-//
-//    public UserModel(String userName, String userId, String emailAddress) {
-//        this.userName = userName;
-//        this.userId = userId;
-//        this.emailAddress = emailAddress;
-//    }
-//
-//    public String getUserName() {
-//        return userName;
-//    }
-//
-//    public void setUserName(String userName) {
-//        this.userName = userName;
-//    }
-//
-//    public String getUserId() {
-//        return userId;
-//    }
-//
-//    public void setUserId(String userId) {
-//        this.userId = userId;
-//    }
-//
-//    public String getEmailAddress() {
-//        return emailAddress;
-//    }
-//
-//    public void setEmailAddress(String emailAddress) {
-//        this.emailAddress = emailAddress;
-//    }
 }

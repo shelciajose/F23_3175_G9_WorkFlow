@@ -7,6 +7,7 @@ import static com.example.workflow.utils.ConstantUtils.KEY_FIRST_NAME;
 import static com.example.workflow.utils.ConstantUtils.KEY_LAST_NAME;
 import static com.example.workflow.utils.ConstantUtils.KEY_PHONE_NUMBER;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER;
+import static com.example.workflow.utils.ConstantUtils.KEY_USER_NAME;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -51,23 +52,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
     private View viewFragment = null;
 
-    UserDetails userDetails;
-
-    EditText edt_name, edt_phone, edt_email, edt_dept, edt_address;
+    EditText edt_name, edt_email, edt_dept, edt_address;
 
     TextView emname;
-    TextView emid;
     TextView empdep;
     TextView email;
     TextView phone;
     TextView empadd;
+    TextView empUserName;
+    EditText edt_userName;
 
     LinearLayout buttonLayout;
-    //Start change by Takumi
     String userId;
     FirebaseAuth firebaseAuth;
-    //End
-
     private DatabaseReference usersRef;
 
     public ProfileFragment() {
@@ -91,18 +88,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         viewFragment = inflater.inflate(R.layout.fragment_profile, container, false);
 
         emname =viewFragment.findViewById(R.id.profileName);
-        emid = viewFragment.findViewById(R.id.profileUserID);
         empdep = viewFragment.findViewById(R.id.profileDepartment);
         email = viewFragment.findViewById(R.id.profileEmail);
         phone = viewFragment.findViewById(R.id.profilePhoneNumber);
         empadd = viewFragment.findViewById(R.id.profileAddress);
-
+        empUserName = viewFragment.findViewById(R.id.profileUserName);
 
         edt_name = viewFragment.findViewById(R.id.edit_profileName);
         edt_dept = viewFragment.findViewById(R.id.edit_profileDepartment);
-        edt_phone = viewFragment.findViewById(R.id.edit_PhoneNumber);
         edt_email = viewFragment.findViewById(R.id.edit_Email);
         edt_address = viewFragment.findViewById(R.id.edit_Address);
+        edt_userName = viewFragment.findViewById(R.id.edit_UserName);
+
 
         buttonLayout = viewFragment.findViewById(R.id.button_layout);
 
@@ -112,92 +109,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         ((AppCompatButton) viewFragment.findViewById(R.id.profileCancel_btn)).setOnClickListener(this);
         ((AppCompatButton) viewFragment.findViewById(R.id.profileUpdate_btn)).setOnClickListener(this);
 
-        //Start change by Takumi
+
         firebaseAuth = FirebaseAuth.getInstance();
         userId = firebaseAuth.getCurrentUser().getUid();
-        //End
 
-        try {
-            userDetails = new OfflineDatabase(getActivity()).getUser().get(0);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
-        //Start Changed by Takumi
-        //usersRef = FirebaseDatabase.getInstance().getReference().child("users");
-        usersRef = FirebaseDatabase.getInstance().getReference(KEY_USER);
-        //End
-
-        emname.setText(userDetails.getfName() + " " + userDetails.getlName());
-        edt_name.setText(userDetails.getfName() + " " + userDetails.getlName());
-        emid.setText(userDetails.getUserID());
-        empdep.setText(userDetails.getDepartment());
-        edt_dept.setText(userDetails.getDepartment());
-        empadd.setText(userDetails.getAddress());
-        edt_address.setText(userDetails.getAddress());
-        email.setText(userDetails.getEmail());
-        edt_email.setText(userDetails.getEmail());
-        phone.setText(userDetails.getPhone());
-        edt_phone.setText(userDetails.getPhone());
-
+        getUserInfo(userId);
 
         return viewFragment;
     }
 
     private void onRefresh(){
-        try {
-            userDetails = new OfflineDatabase(getActivity()).getUser().get(0);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        userId = firebaseAuth.getCurrentUser().getUid();
 
-        emname.setText(userDetails.getfName() + " " + userDetails.getlName());
-        edt_name.setText(userDetails.getfName() + " " + userDetails.getlName());
-        emid.setText(userDetails.getUserID());
-        empdep.setText(userDetails.getDepartment());
-        edt_dept.setText(userDetails.getDepartment());
-        empadd.setText(userDetails.getAddress());
-        edt_address.setText(userDetails.getAddress());
-        email.setText(userDetails.getEmail());
-        edt_email.setText(userDetails.getEmail());
-        phone.setText(userDetails.getPhone());
-        edt_phone.setText(userDetails.getPhone());
+        getUserInfo(userId);
     }
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.edit_btn){
-            emname.setVisibility(View.GONE);
-            empdep.setVisibility(View.GONE);
-            email.setVisibility(View.GONE);
-            phone.setVisibility(View.GONE);
-            empadd.setVisibility(View.GONE);
-
-            edt_name.setVisibility(View.VISIBLE);
-            edt_email.setVisibility(View.VISIBLE);
-            edt_phone.setVisibility(View.VISIBLE);
-            edt_dept.setVisibility(View.VISIBLE);
-            edt_address.setVisibility(View.VISIBLE);
-
-            buttonLayout.setVisibility(View.VISIBLE);
+            showEditViewProfile();
         }
 
         else if(view.getId() == R.id.profileCancel_btn){
-            emname.setVisibility(View.VISIBLE);
-            empdep.setVisibility(View.VISIBLE);
-            email.setVisibility(View.VISIBLE);
-            phone.setVisibility(View.VISIBLE);
-            empadd.setVisibility(View.VISIBLE);
-
-            edt_name.setVisibility(View.GONE);
-            edt_email.setVisibility(View.GONE);
-            edt_phone.setVisibility(View.GONE);
-            edt_dept.setVisibility(View.GONE);
-            edt_address.setVisibility(View.GONE);
-
-            buttonLayout.setVisibility(View.GONE);
+            showTextViewProfile();
         }
 
         else if(view.getId() == R.id.profileUpdate_btn){
@@ -239,14 +174,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    private void updateUserInfo(String userId, String newfName, String newlName, String newEmail, String newPhoneNumber, String newAddress, String newDept) {
-        //Start Changed by Takumi
-        //DatabaseReference userRef = usersRef.child(userId);
-        //DatabaseReference userRef = usersRef.child(userId);
+    private void updateUserInfo(String userId, String newfName, String newlName, String newEmail, String newUserName, String newAddress, String newDept) {
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put(KEY_FIRST_NAME, newfName);
         userInfo.put(KEY_LAST_NAME, newlName);
-        userInfo.put(KEY_PHONE_NUMBER, newPhoneNumber);
+        userInfo.put(KEY_USER_NAME, newUserName);
         userInfo.put(KEY_ADDRESS, newAddress);
         userInfo.put(KEY_DEPARTMENT, newDept);
         userInfo.put(KEY_EMAIL_ADDRESS, newEmail);
@@ -256,8 +188,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     UserModel user = dataSnapshot.getValue(UserModel.class);
-                    System.out.println(userId);
-                    System.out.println(user.getUserId());
                     if(user.getUserId().equals(userId)) {
                         usersRef.child(dataSnapshot.getKey()).updateChildren(userInfo);
                         break;
@@ -271,23 +201,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             }
         });
 
-        // Update the user details in the Realtime Database
-        //userRef.child("firstName").setValue(newfName);
-        //userRef.child("lastName").setValue(newlName);
-        //userRef.child("emailAddress").setValue(newEmail);
-        //userRef.child("phoneNumber").setValue(newPhoneNumber);
-        //userRef.child("Address").setValue(newAddress);
-        //userRef.child("Dept").setValue(newDept);
-        //End
-
-        userDetails.setAddress(newAddress);
-        userDetails.setfName(newfName);
-        userDetails.setlName(newlName);
-        userDetails.setEmail(newEmail);
-        userDetails.setPhone(newPhoneNumber);
-        userDetails.setDepartment(newDept);
-        new OfflineDatabase(getActivity()).updateUserDetailsToDatabase(userId, userDetails);
-
         onRefresh();
 
         Log.d("UpdateUserInfo", "User details updated in the database");
@@ -295,7 +208,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
 
     private void alertUpdateDialog() {
-
+        if(userId == null) {
+            firebaseAuth = FirebaseAuth.getInstance();
+            userId = firebaseAuth.getCurrentUser().getUid();
+        }
         android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(getActivity());
 
         builder1.setMessage("Do you want to update the profile ?");
@@ -315,31 +231,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                                 String firstName = names[0];
                                 String lastName = names[1];
 
-                                if(edt_phone.getText().toString().trim().length()==10){
-                                    if(edt_email.getText().toString().trim().length()>3 && edt_email.getText().toString().contains("@")){
-                                        if(edt_dept.getText().toString().trim().length()>2){
-                                            if(edt_address.getText().toString().trim().length()>3){
-                                                //Start change by Takumi
-                                                //updateUserInfo(userDetails.getUserID(), firstName,lastName,edt_email.getText().toString().trim(), edt_phone.getText().toString().trim(),
-                                                        //edt_address.getText().toString().trim(), edt_dept.getText().toString().trim());
-                                                updateUserInfo(userId, firstName, lastName, edt_email.getText().toString().trim(), edt_phone.getText().toString().trim(),
+                                if(edt_email.getText().toString().trim().length()>3 && edt_email.getText().toString().contains("@")) {
+                                    if(edt_dept.getText().toString().trim().length()>2) {
+                                        if(edt_address.getText().toString().trim().length()>3) {
+                                                updateUserInfo(userId, firstName, lastName, edt_email.getText().toString().trim(), edt_userName.getText().toString().trim(),
                                                         edt_address.getText().toString().trim(), edt_dept.getText().toString().trim());
-                                                //End
-                                            }
-                                            else {
-                                                edt_address.setError("Please enter proper address");
-                                            }
+                                        } else {
+                                            edt_address.setError("Please enter proper address");
                                         }
-                                        else {
-                                            edt_dept.setError("Please enter a valid department");
-                                        }
+
+                                    } else {
+                                        edt_dept.setError("Please enter a valid department");
                                     }
-                                    else {
-                                        edt_email.setError("Please enter valid email");
-                                    }
-                                }
-                                else {
-                                    edt_phone.setError("Please enter valid phone number");
+                                } else {
+                                    edt_email.setError("Please enter valid email");
                                 }
                             }
                             else {
@@ -349,7 +254,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                         catch (Exception e){
                             e.printStackTrace();
                         }
-
+                        showTextViewProfile();
+                        getUserInfo(userId);
                     }
                 });
 
@@ -363,6 +269,71 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
         android.app.AlertDialog alertCheckInAlertDialog = builder1.create();
         alertCheckInAlertDialog.show();
+    }
+
+    private void getUserInfo(String userId) {
+        usersRef = FirebaseDatabase.getInstance().getReference(KEY_USER);
+        usersRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    UserModel user = dataSnapshot.getValue(UserModel.class);
+                    if(user.getUserId() != null) {
+                        if(user.getUserId().equals(userId)) {
+                            emname.setText(user.getFirstName() + " " + user.getLastName());
+                            edt_name.setText(user.getFirstName() + " " + user.getLastName());
+                            empdep.setText(user.getDept());
+                            edt_dept.setText(user.getDept());
+                            empadd.setText(user.getAddress());
+                            edt_address.setText(user.getAddress());
+                            email.setText(user.getEmailAddress());
+                            edt_email.setText(user.getEmailAddress());
+                            empUserName.setText(user.getUserName());
+                            edt_userName.setText(user.getUserName());
+                            phone.setText(user.getPhonenumber());
+                            break;
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void showTextViewProfile() {
+        emname.setVisibility(View.VISIBLE);
+        empdep.setVisibility(View.VISIBLE);
+        email.setVisibility(View.VISIBLE);
+        phone.setVisibility(View.VISIBLE);
+        empadd.setVisibility(View.VISIBLE);
+        empUserName.setVisibility(View.VISIBLE);
+
+        edt_name.setVisibility(View.GONE);
+        edt_email.setVisibility(View.GONE);
+        edt_dept.setVisibility(View.GONE);
+        edt_address.setVisibility(View.GONE);
+        edt_userName.setVisibility(View.GONE);
+
+        buttonLayout.setVisibility(View.GONE);
+    }
+
+    private void showEditViewProfile() {
+        emname.setVisibility(View.GONE);
+        empdep.setVisibility(View.GONE);
+        email.setVisibility(View.GONE);
+        empadd.setVisibility(View.GONE);
+        empUserName.setVisibility(View.GONE);
+
+        edt_name.setVisibility(View.VISIBLE);
+        edt_email.setVisibility(View.VISIBLE);
+        edt_dept.setVisibility(View.VISIBLE);
+        edt_address.setVisibility(View.VISIBLE);
+        edt_userName.setVisibility(View.VISIBLE);
+
+        buttonLayout.setVisibility(View.VISIBLE);
     }
 
 

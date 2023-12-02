@@ -340,7 +340,10 @@ public class LeaveRequestFragment extends Fragment {
                 if(status.length() != 0) {
                     txtViewRequestStatus.setVisibility(View.VISIBLE);
                     txtViewRequestStatus.setText("Your request is " + status + ".");
-                    btnLeaveRequestConfirm.setVisibility(View.VISIBLE);
+                    if((status.equals("Proceeding")) == false) {
+                        btnLeaveRequestConfirm.setVisibility(View.VISIBLE);
+                    }
+
                     btnLeaveRequestConfirm.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
