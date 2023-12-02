@@ -6,15 +6,17 @@ public class ChatModel {
     private String sender;
     private String type;
     private String timeStamp;
+    private boolean dilihat;
 
     ChatModel(){}
 
-    public ChatModel(String message, String receiver, String sender, String type, String timeStamp) {
+    public ChatModel(String message, String receiver, String sender, String type, String timeStamp, boolean dilihat) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;
         this.type = type;
         this.timeStamp = timeStamp;
+        this.dilihat = dilihat;
     }
 
     public String getMessage() {
@@ -55,5 +57,13 @@ public class ChatModel {
 
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public boolean isDilihat() {
+        return dilihat;
+    }
+
+    public void setDilihat(boolean dilihat) {
+        this.dilihat = dilihat;
     }
 }
