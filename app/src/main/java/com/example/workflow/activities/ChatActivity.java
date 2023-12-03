@@ -122,6 +122,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         readMessages();
+
     }
 
     private void readMessages() {
@@ -144,6 +145,7 @@ public class ChatActivity extends AppCompatActivity {
                     adapterChat = new ChatAdapter(ChatActivity.this, chatList, iconUrl);
                     adapterChat.notifyDataSetChanged();
                     recyclerViewChat.setAdapter(adapterChat);
+                    recyclerViewChat.scrollToPosition(chatList.size() - 1);
                 }
             }
 
