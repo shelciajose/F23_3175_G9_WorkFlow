@@ -10,10 +10,20 @@ public class UserModel {
     private String userName;
 
     private String userId;
+    private String userImage;
 
     public UserModel(){}
 
-    public UserModel(String firstName, String lastName, String address, String dept, String emailAddress, String phonenumber, String userName, String userId) {
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
+    }
+
+    public UserModel(String firstName, String lastName, String address, String dept, String emailAddress, String phonenumber, String userName, String userId, String userImage) {
         this.firstName = firstName;
         this.lastName = lastName;
         Address = address;
@@ -22,6 +32,7 @@ public class UserModel {
         this.phoneNumber = phonenumber;
         this.userName = userName;
         this.userId = userId;
+        this.userImage = userImage;
     }
 
     public String getFirstName() {

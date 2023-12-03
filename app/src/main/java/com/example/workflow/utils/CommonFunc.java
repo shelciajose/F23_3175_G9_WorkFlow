@@ -3,6 +3,7 @@ package com.example.workflow.utils;
 import static android.content.Context.ACTIVITY_SERVICE;
 import static androidx.core.app.NotificationCompat.PRIORITY_HIGH;
 import static com.example.workflow.utils.ConstantUtils.FORMAT_CALENDAR_EVENT;
+import static com.example.workflow.utils.ConstantUtils.IMAGE_STORAGE_DIRECTORY_NAME;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_CHANNEL_ID_OF_COMM_NOTIFICATION;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_CHANNEL_NAME_OF_COMM_NOTIFICATION;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_TYPE_GRANT_PERMISSION;
@@ -27,13 +28,17 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.view.View;
+import android.widget.Toast;
 import android.window.SplashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +49,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -83,6 +90,73 @@ public class CommonFunc {
 
     }
 
+    public static String convertImageToBase64(Bitmap bitmap, Context context) {
+        try {
+            String encodedImage = null;
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            encodedImage = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+            return encodedImage;
+        } catch (OutOfMemoryError error) {
+
+            Toast.makeText(context, context.getString(R.string.justErrorCode)+" 10", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+
+    }
+
+    public static Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    public static Bitmap getResizedCameraBitmap(Bitmap image, int maxSize) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        image = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
+
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float)width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+        return Bitmap.createScaledBitmap(image, width, height, true);
+
+    }
+
+
+    public static boolean checkAndCreateACACHADirectoryForImages() {
+        File rootPath = new File(Environment.getExternalStorageDirectory(), IMAGE_STORAGE_DIRECTORY_NAME);
+        System.out.println("oooooo--------------r1---"+rootPath.getAbsolutePath());
+        if (!rootPath.exists()) {
+            rootPath.mkdirs();
+
+            return false;
+        } else {
+            return true;
+        }
+
+    }
 
     public static String getTodayDate() {
         Calendar c = Calendar.getInstance();

@@ -1,16 +1,26 @@
 package com.example.workflow.fragments;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.workflow.utils.ConstantUtils.KEY_ADDRESS;
 import static com.example.workflow.utils.ConstantUtils.KEY_DEPARTMENT;
 import static com.example.workflow.utils.ConstantUtils.KEY_EMAIL_ADDRESS;
 import static com.example.workflow.utils.ConstantUtils.KEY_FIRST_NAME;
+import static com.example.workflow.utils.ConstantUtils.KEY_IMAGE;
 import static com.example.workflow.utils.ConstantUtils.KEY_LAST_NAME;
 import static com.example.workflow.utils.ConstantUtils.KEY_PHONE_NUMBER;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER_NAME;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.viewmodel.CreationExtras;
@@ -31,6 +42,7 @@ import com.example.workflow.database.OfflineDatabase;
 import com.example.workflow.database.offlineModels.EmployeeData;
 import com.example.workflow.models.UserDetails;
 import com.example.workflow.models.UserModel;
+import com.example.workflow.utils.CommonFunc;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,8 +50,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,6 +69,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
     EditText edt_name, edt_email, edt_dept, edt_address;
 
+    ImageView ivimage;
+    Uri image_uri;
+
+    String b64_toserver;
     TextView emname;
     TextView empdep;
     TextView email;
@@ -65,6 +84,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     LinearLayout buttonLayout;
     String userId;
     FirebaseAuth firebaseAuth;
+
+    String profileB64;
     private DatabaseReference usersRef;
 
     public ProfileFragment() {
@@ -103,13 +124,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
         buttonLayout = viewFragment.findViewById(R.id.button_layout);
 
-        final ImageView ivimage = (ImageView) viewFragment.findViewById(R.id.profile_image);
+        ivimage = (ImageView) viewFragment.findViewById(R.id.profile_image);
 
         ((ImageButton) viewFragment.findViewById(R.id.edit_btn)).setOnClickListener(this);
         ((AppCompatButton) viewFragment.findViewById(R.id.profileCancel_btn)).setOnClickListener(this);
         ((AppCompatButton) viewFragment.findViewById(R.id.profileUpdate_btn)).setOnClickListener(this);
 
 
+        ivimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectUploadImage();
+            }
+        });
         firebaseAuth = FirebaseAuth.getInstance();
         userId = firebaseAuth.getCurrentUser().getUid();
 
@@ -117,6 +144,111 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
         return viewFragment;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bitmap = null;
+        if(requestCode == REQUEST_CAMERA && resultCode == RESULT_OK)
+        {
+            bitmap = uriToBitmap(image_uri);
+            bitmap = CommonFunc.getResizedBitmap(bitmap, 1024);
+
+        }
+        else if(requestCode == REQUEST_GALLERY && resultCode == RESULT_OK){
+            bitmap = uriToBitmap(data.getData());
+            bitmap = CommonFunc.getResizedBitmap(bitmap, 1024);
+
+        }
+        converttob64(bitmap);
+
+    }
+
+    private void convertb64ToImage(String base64){
+
+
+        final String pureBase64Encoded = base64.substring(base64.indexOf(",") + 1);
+        final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+        ivimage.setImageBitmap(decodedBitmap);
+    }
+
+    private void openGalary() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), REQUEST_GALLERY);
+    }
+
+    private void opencamera(){
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+        image_uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+        startActivityForResult(cameraIntent, REQUEST_CAMERA);
+    }
+
+    private Bitmap uriToBitmap(Uri selectedFileUri) {
+        try {
+            ParcelFileDescriptor parcelFileDescriptor =
+                    getActivity().getContentResolver().openFileDescriptor(selectedFileUri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+
+            parcelFileDescriptor.close();
+            return image;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
+    private void selectUploadImage() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+        builder.setTitle("Upload Pictures Option");
+        builder.setMessage("How do you want to set your picture?");
+        builder.setPositiveButton("Gallery", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        // if (PermissionUtils.checkStoragePermission(getActivity())) {
+                        openGalary();
+                   /* } else {
+                        PermissionUtils.openPermissionDialog(getActivity(), "Please grant Storage Permission");
+
+                    }*/
+                    }
+                }
+        );
+        builder.setNegativeButton("Camera", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        //  if (PermissionUtils.checkCameraPermissionAndStoragePermission(getActivity())) {
+                        opencamera();
+                  /*  } else {
+                        PermissionUtils.openPermissionDialog(getActivity(), "Please grant Camera and Storage Permission");
+                    }*/
+                    }
+                }
+        );
+        android.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void converttob64(Bitmap bitmap) {
+
+        Bitmap bit = CommonFunc.getResizedBitmap(bitmap, 100);
+        profileB64 = CommonFunc.convertImageToBase64(bitmap, getActivity());
+        String thumbb64 = CommonFunc.convertImageToBase64(bit, getActivity());
+
+        ivimage.setImageBitmap(bit);
+
+    }
+
+    private final int REQUEST_CAMERA = 123;
+
+    private final int REQUEST_GALLERY = 124;
 
     private void onRefresh(){
         firebaseAuth = FirebaseAuth.getInstance();
@@ -182,6 +314,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         userInfo.put(KEY_ADDRESS, newAddress);
         userInfo.put(KEY_DEPARTMENT, newDept);
         userInfo.put(KEY_EMAIL_ADDRESS, newEmail);
+        userInfo.put(KEY_IMAGE, profileB64);
+
 
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -291,6 +425,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                             empUserName.setText(user.getUserName());
                             edt_userName.setText(user.getUserName());
                             phone.setText(user.getPhonenumber());
+                            profileB64 = user.getUserImage();
+                            if(profileB64!=null) {
+                                convertb64ToImage(profileB64);
+                            }
                             break;
                         }
                     }
