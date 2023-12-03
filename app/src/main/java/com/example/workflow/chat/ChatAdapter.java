@@ -14,7 +14,10 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,5 +170,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Myholder>{
             txtViewTime = itemView.findViewById(R.id.txtViewTime);
             messageLayout = itemView.findViewById(R.id.messageLayout);
         }
+    }
+
+    private Bitmap convertb64ToImage(String base64){
+        final String pureBase64Encoded = base64.substring(base64.indexOf(",") + 1);
+        final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+
+        return decodedBitmap;
     }
 }

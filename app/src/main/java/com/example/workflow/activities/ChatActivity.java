@@ -13,8 +13,11 @@ import static com.example.workflow.utils.ConstantUtils.KEY_USER;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER_ID;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER_NAME;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -42,6 +45,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
@@ -49,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     Query userQuery;
     String userId;
     String receiverUserId;
-    String iconUrl;
+    String iconUri;
     String receiverUserName;
     String image;
     List<ChatModel> chatList;
@@ -107,13 +113,17 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     receiverUserName = String.valueOf(dataSnapshot.child(KEY_USER_NAME).getValue());
-                    iconUrl = String.valueOf(dataSnapshot.child(KEY_IMAGE).getValue());
-                    txtViewReceiverName.setText(receiverUserName);
-                    try {
-                        Glide.with(ChatActivity.this).load(image).placeholder(R.drawable.account_icon).into(imgViewProfile);
-                    } catch (Exception ex) {
-
+                    iconUri = String.valueOf(dataSnapshot.child(KEY_IMAGE).getValue());
+                    if(iconUri != null) {
+                        if(iconUri.length() != 0) {
+                            imgViewProfile.setImageBitmap(convertb64ToImage(iconUri));
+                        } else {
+                            imgViewProfile.setImageResource(R.drawable.account_icon);
+                        }
+                    } else {
+                        imgViewProfile.setImageResource(R.drawable.account_icon);
                     }
+                    txtViewReceiverName.setText(receiverUserName);
                 }
             }
             @Override
@@ -142,7 +152,7 @@ public class ChatActivity extends AppCompatActivity {
                         chatList.add(modelChat);
                     }
 
-                    adapterChat = new ChatAdapter(ChatActivity.this, chatList, iconUrl);
+                    adapterChat = new ChatAdapter(ChatActivity.this, chatList, iconUri);
                     adapterChat.notifyDataSetChanged();
                     recyclerViewChat.setAdapter(adapterChat);
                     recyclerViewChat.scrollToPosition(chatList.size() - 1);
@@ -206,6 +216,14 @@ public class ChatActivity extends AppCompatActivity {
         if(user != null) {
             userId = user.getUid();
         }
+    }
+
+    private Bitmap convertb64ToImage(String base64){
+        final String pureBase64Encoded = base64.substring(base64.indexOf(",") + 1);
+        final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+
+        return decodedBitmap;
     }
 
 }

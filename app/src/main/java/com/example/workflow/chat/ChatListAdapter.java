@@ -6,6 +6,9 @@ import static com.example.workflow.utils.ConstantUtils.KEY_RECEIVER_USER_ID;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Myholder>{
     FirebaseDatabase firebaseDatabase;
     Context context;
     String listUserName;
-    String iconUrl;
+    String iconUri;
     String lastMessage;
     List<UserModel> receiverUsersList;
     HashMap<String, String> lastMessageMap;
@@ -49,7 +54,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Myhold
     public void onBindViewHolder(@NonNull ChatListAdapter.Myholder holder, int position) {
         final String receiverUserId = receiverUsersList.get(position).getUserId();
         listUserName = receiverUsersList.get(position).getUserName();
-//        iconUrl = receiverUsersList.get(position).getImage();
+        iconUri = receiverUsersList.get(position).getUserImage();
         lastMessage = lastMessageMap.get(receiverUserId);
         holder.txtViewName.setText(listUserName);
 
@@ -60,11 +65,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Myhold
             holder.txtViewLastMessage.setText(lastMessage);
         }
 
-//        try {
-//            Glide.with(context).load(iconUrl).into(holder.imgViewIcon);
-//        } catch(Exception ex) {
-//            ex.printStackTrace();
-//        }
+        if(iconUri != null) {
+            if (iconUri.length() != 0) {
+                holder.icon.setImageBitmap(convertb64ToImage(iconUri));
+            } else {
+                holder.icon.setImageResource(R.drawable.account_icon);
+            }
+        } else {
+            holder.icon.setImageResource(R.drawable.account_icon);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -99,12 +108,23 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Myhold
         ImageView imgViewIcon;
         TextView txtViewName;
         TextView txtViewLastMessage;
+        CircleImageView icon;
 
         public Myholder(@NonNull View itemView) {
             super(itemView);
             imgViewIcon = itemView.findViewById(R.id.iconChatList);
             txtViewName = itemView.findViewById(R.id.txtViewNameChatList);
             txtViewLastMessage = itemView.findViewById(R.id.txtViewLastMessage);
+            icon = itemView.findViewById(R.id.iconChatList);
+
         }
+    }
+
+    private Bitmap convertb64ToImage(String base64){
+        final String pureBase64Encoded = base64.substring(base64.indexOf(",") + 1);
+        final byte[] decodedBytes = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
+        Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+
+        return decodedBitmap;
     }
 }
