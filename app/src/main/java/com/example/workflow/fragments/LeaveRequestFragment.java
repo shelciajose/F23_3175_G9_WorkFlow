@@ -112,6 +112,11 @@ public class LeaveRequestFragment extends Fragment {
                 String startDate = editTxtLeaveStartDate.getText().toString().trim();
                 String endDate = editTxtLeaveEndDate.getText().toString().trim();
 
+                if(startDate.length() == 0 || endDate.length() == 0) {
+                    Toast.makeText(view.getContext(), "Please enter both date", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     sDate = LocalDate.parse(convertStringDate(startDate));
                     eDate = LocalDate.parse(convertStringDate(endDate));
@@ -122,10 +127,7 @@ public class LeaveRequestFragment extends Fragment {
                     }
                 }
 
-//                if(startDate.length() == 0 || endDate.length() == 0) {
-//                    Toast.makeText(view.getContext(), "Please enter both date", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
+
 
                 dbref.addValueEventListener(new ValueEventListener() {
                     @Override
