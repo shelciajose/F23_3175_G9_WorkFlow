@@ -429,6 +429,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                             if(profileB64!=null) {
                                 convertb64ToImage(profileB64);
                             }
+
                             break;
                         }
                     }
