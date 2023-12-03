@@ -75,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:textSize="7sp"
-                        android:text="Af jkcjh hxcb hjvx hjh b ch hghg h bv hbh jh jh jhj jhj jhj jhhj bhb bb bjb jhj b b jh jhcjh bcb " />
+                        android:text="  " />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -120,7 +120,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:textSize="7sp"
-                        android:text="NAasdfghjk hjcc hgshg ghg hgcgh ghh hghgb hhg hb hgh  hgh"/>
+                        android:text=" "/>
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>

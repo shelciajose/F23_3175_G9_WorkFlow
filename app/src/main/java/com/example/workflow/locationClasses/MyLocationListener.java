@@ -1,4 +1,4 @@
-package com.example.workflow.services;
+package com.example.workflow.locationClasses;
 
 import android.location.Location;
 import android.location.LocationListener;

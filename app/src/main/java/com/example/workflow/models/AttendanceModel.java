@@ -1,25 +1,16 @@
 package com.example.workflow.models;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
+public class AttendanceModel {
 
-public class AttendanceModel implements Serializable {
-    @SerializedName("AttendanceDate")
-    @Expose
     private String attendanceDate;
-    @SerializedName("CheckInTime")
-    @Expose
+
     private String checkintime;
-    @SerializedName("CheckInLocation")
-    @Expose
+
     private String checkinlocation;
-    @SerializedName("CheckOutTime")
-    @Expose
+
     private String checkouttime;
-    @SerializedName("CheckOutLocation")
-    @Expose
+
     private String checkoutlocation;
 
     public String getAttendanceDate() {

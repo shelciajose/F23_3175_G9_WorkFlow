@@ -7,8 +7,6 @@ import android.location.LocationManager;
 
 import androidx.core.app.ActivityCompat;
 
-import com.example.workflow.services.MyLocationListener;
-
 public class MyLocationManager {
     private static final long MIN_TIME_INTERVAL = 1000; // 1 seconds
     private static final float MIN_DISTANCE_CHANGE = 1.0f; // 1 meters

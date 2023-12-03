@@ -1,7 +1,5 @@
 package com.example.workflow.fragments;
 
-import static com.example.workflow.utils.ConstantUtils.CHECKING_IN_BUTTON_NAME;
-import static com.example.workflow.utils.ConstantUtils.CHECKING_OUT_BUTTON_NAME;
 import static com.example.workflow.utils.ConstantUtils.CHECK_IN_BUTTON_NAME;
 import static com.example.workflow.utils.ConstantUtils.CHECK_OUT_BUTTON_NAME;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_TYPE_NOTHING;
@@ -39,7 +37,7 @@ import com.example.workflow.database.OfflineDatabase;
 import com.example.workflow.locationClasses.LocationUpdateListener;
 import com.example.workflow.locationClasses.MyLocationManager;
 import com.example.workflow.notification.CheckInOutNotifi;
-import com.example.workflow.services.MyLocationListener;
+import com.example.workflow.locationClasses.MyLocationListener;
 import com.example.workflow.utils.CommonFunc;
 import com.example.workflow.utils.ConstantUtils;
 import com.example.workflow.utils.PreferenceUtils;

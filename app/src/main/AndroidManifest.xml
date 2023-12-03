@@ -37,12 +37,6 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon,android:allowBackup">
         <activity
-            android:name=".activities.EmployerLoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.UserSelectionActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.SplashScreen"
             android:exported="true"
             android:theme="@style/AppTheme.NoActionBar">

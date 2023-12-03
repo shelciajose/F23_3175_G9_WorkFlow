@@ -15,10 +15,6 @@ public class DBTableColumnsNames {
     static final String OFFLINE_CHECK_IN_LATITUDE = "CheckIn_Latitude";
     static final String OFFLINE_CHECK_IN_LONGITUDE = "CheckIn_Longitude";
     static final String OFFLINE_CHECK_IN_LOCATION = "CheckIn_Location";
-    static final String OFFLINE_CHECK_IN_IS_MOCK = "CheckIn_IsMock";
-    static final String OFFLINE_CHECK_IN_BATTERY_PERCENTAGE = "CheckIn_BatteryPerc";
-    static final String OFFLINE_CHECK_IN_SIGNAL_STRENGTH = "CheckIn_SignalStrength";
-    static final String OFFLINE_CHECK_IN_NETWORK_TYPE = "CheckIn_NetworkType";
     static final String OFFLINE_CHECK_IN_REFERENCE_ID = "CheckIn_RefeId";
     static final String OFFLINE_CHECK_IN_DATE = "CheckIn_Date";
 
