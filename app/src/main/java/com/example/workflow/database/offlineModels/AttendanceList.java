@@ -25,6 +25,7 @@ public class AttendanceList {
     @SerializedName("RefNo")
     private String refNo;
 
+    private String checkInRef;
     private String isMock;
     private String batteryPresentage;
     private String networkType;
@@ -141,5 +142,13 @@ public class AttendanceList {
 
     public void setRefNo(String refNo) {
         this.refNo = refNo;
+    }
+
+    public String getCheckInRef() {
+        return checkInRef;
+    }
+
+    public void setCheckInRef(String refNo) {
+        this.checkInRef = refNo;
     }
 }

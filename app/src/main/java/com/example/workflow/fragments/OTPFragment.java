@@ -46,7 +46,7 @@ public class OTPFragment extends Fragment implements View.OnClickListener {
         viewFragment.findViewById(R.id.fragment_verify_otp_resend_otp_textview_id)
                 .setOnClickListener(this);
 
-        ((TextView)viewFragment.findViewById(R.id.phonenumber_tv)).setText(getArguments().getString("mobno"));
+        ((TextView)viewFragment.findViewById(R.id.phonenumber_tv)).setText("+1 " + getArguments().getString("mobno"));
         userId = getArguments().getString("userID");
 
         viewFragment.findViewById(R.id.numberEdit_IV).setOnClickListener(new View.OnClickListener() {

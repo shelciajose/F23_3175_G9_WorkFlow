@@ -35,7 +35,7 @@ public class CheckInOutNotifi {
         CreateNotificationChannel(context, notificationChannel, "Auto");
 
 
-        Bitmap logoBitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.app_logo);
+        Bitmap logoBitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_logo);
         Intent intentForPendingIntent = null;
             if (PreferenceUtils.checkUserisLogedin(context))
                 intentForPendingIntent = new Intent(context, NavigationActivity.class);

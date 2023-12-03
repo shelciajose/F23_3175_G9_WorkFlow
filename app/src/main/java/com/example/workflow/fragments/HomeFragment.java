@@ -1,22 +1,21 @@
 package com.example.workflow.fragments;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 import static com.example.workflow.utils.ConstantUtils.CHECKING_IN_BUTTON_NAME;
 import static com.example.workflow.utils.ConstantUtils.CHECKING_OUT_BUTTON_NAME;
 import static com.example.workflow.utils.ConstantUtils.CHECK_IN_BUTTON_NAME;
 import static com.example.workflow.utils.ConstantUtils.CHECK_OUT_BUTTON_NAME;
+import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_TYPE_NOTHING;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.location.LocationManager;
-import android.os.AsyncTask;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,9 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,34 +36,31 @@ import android.widget.Toast;
 
 import com.example.workflow.R;
 import com.example.workflow.database.OfflineDatabase;
-import com.example.workflow.services.PostCheckinServices;
-import com.example.workflow.services.PostCheckoutServices;
+import com.example.workflow.locationClasses.LocationUpdateListener;
+import com.example.workflow.locationClasses.MyLocationManager;
+import com.example.workflow.notification.CheckInOutNotifi;
+import com.example.workflow.services.MyLocationListener;
 import com.example.workflow.utils.CommonFunc;
 import com.example.workflow.utils.ConstantUtils;
-import com.example.workflow.utils.PermissionUtils;
 import com.example.workflow.utils.PreferenceUtils;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.util.Timer;
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, LocationUpdateListener {
 
 
     private View viewFragment = null;
-    private StartServiceAsyncTask startServiceAsyncTask = null;
     private OfflineDatabase offlineDatabase = null;
     private Timer timer = null;
     public LinearLayoutCompat linearLayoutCompat = null;
     public FrameLayout frameLayout = null;
+
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private static final long MIN_TIME_INTERVAL = 10000; // 10 seconds
+    private static final float MIN_DISTANCE_CHANGE = 10.0f; // 10 meters
+
+    private MyLocationManager locationManager;
+    private MyLocationListener locationListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,6 +76,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         viewFragment.findViewById(R.id.fragment_home_check_in_location_id).setOnClickListener(this);
 
         timercheck();
+
+        settingView();
 
         return viewFragment;
     }
@@ -97,17 +97,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         settingView();
     }
 
-    private void timercheck(){
+    private void timercheck() {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int timeToRepeat = 1000;    //in milissegunds
-                try{Thread.sleep(timeToRepeat);}catch (Exception e) {}
+                try {
+                    Thread.sleep(timeToRepeat);
+                } catch (Exception e) {
+                }
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(getActivity()!=null) {
+                        if (getActivity() != null) {
                             if (PreferenceUtils.getIsUserCheckedInManually(getActivity(), false,
                                     null, null, null, null)) {
                                 setTimeAndLocation(PreferenceUtils.getCheckInLocationToSharedPreference(getActivity()),
@@ -133,7 +136,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }).start();
     }
 
-    public void settingView(){
+    public void settingView() {
         try {
             setTheButtonTextDefaultText(false, "");
         } catch (Exception e) {
@@ -159,29 +162,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setTheButtonTextDefaultText(boolean showSnakebar, String message) throws Exception {
-
-        if (PreferenceUtils.isCheckInOutServiceRunning(getActivity())) {
-            if (CommonFunc.isServiceRunningForCheckInAndOut(getActivity(), true)) {
-                ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                        .setText(CHECKING_IN_BUTTON_NAME);
-                if (showSnakebar) {
-                    CommonFunc.commonDialog(getActivity(),
-                            getString(R.string.alert),
-                            "Checking-in in process...", false,
-                            (AppCompatActivity) getActivity(),
-                            viewFragment.findViewById(R.id.fragment_home_scroolview));
-                }
-            } else if (CommonFunc.isServiceRunningForCheckInAndOut(getActivity(), false)) {
-                ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                        .setText(CHECKING_OUT_BUTTON_NAME);
-                if (showSnakebar) {
-                    CommonFunc.commonDialog(getActivity(),
-                            getString(R.string.alert),
-                            "Checking-out in process...", false,
-                            (AppCompatActivity) getActivity(),
-                            viewFragment.findViewById(R.id.fragment_home_scroolview));
-                }
-            } else {
                 if (!PreferenceUtils.getIsUserCheckedInManually(getActivity(), false, null,
                         null, null, null)) {
                     ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
@@ -215,44 +195,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 viewFragment.findViewById(R.id.fragment_home_scroolview));
                     }
                 }
-            }
 
-
-        } else {
-
-            if (!PreferenceUtils.getIsUserCheckedInManually(getActivity(), false,
-                    null, null, null, null)) {
-                ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                        .setText(CHECK_IN_BUTTON_NAME);
-                setTimeAndLocation("Check-In for location", "On Duty From NA");
-                if (timer != null)
-                    timer.cancel();
-                runContiniouslyWorkTime();
-
-                if (showSnakebar) {
-                    CommonFunc.commonDialog(getActivity(),
-                            getString(R.string.alert),
-                            message, false,
-                            (AppCompatActivity) getActivity(),
-                            viewFragment.findViewById(R.id.fragment_home_scroolview));
-                }
-            } else {
-                ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                        .setText(CHECK_OUT_BUTTON_NAME);
-
-                setTimeAndLocation(PreferenceUtils.getCheckInLocationToSharedPreference(getActivity()),
-                        CommonFunc.convertTimestampToTime(PreferenceUtils.getTodayCheckInTimeStamp(getActivity()) + ""));
-                runContiniouslyWorkTime();
-
-                if (showSnakebar) {
-                    CommonFunc.commonDialog(getActivity(),
-                            getString(R.string.alert),
-                            message, false,
-                            (AppCompatActivity) getActivity(),
-                            viewFragment.findViewById(R.id.fragment_home_scroolview));
-                }
-            }
-        }
     }
 
     void runContiniouslyWorkTime() {
@@ -316,7 +259,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (view.getId() == R.id.fragment_home_check_in_out)
             checkIsCheckingInRunning();
 
-        else if (view.getId() == R.id.fragment_home_check_in_location_id){
+        else if (view.getId() == R.id.fragment_home_check_in_location_id) {
             if (PreferenceUtils.getIsUserCheckedInManually(getActivity(), false,
                     null, null, null, null))
                 Toast.makeText(getActivity(), "Check-in Address:: "
@@ -370,12 +313,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
-                        if (PermissionUtils.checkLoactionPermission(getActivity())) {
+                        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            startLocationUpdates();
+                        } else {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                        }
+                        /*if (PermissionUtils.checkLoactionPermission(getActivity())) {
                             connectToGoogleApiClientAndGetTheAddress(true);
-                           // showProgressDialog();
+                            // showProgressDialog();
                         } else {
                             PermissionUtils.openPermissionDialog(getActivity(), "Please grant location permission");
-                        }
+                        }*/
 
                     }
                 });
@@ -419,169 +367,89 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////    get loc stuff. . .  .
-////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////// google api client establishment to access address
-////
-//    private GoogleApiClient googleApiClient = null;
-    private LocationRequest locationRequest = null;
-    private FusedLocationProviderClient mFusedLocationClient = null;
-    //
-    private LocationManager locationManager = null;
-
-    ///
-    private void connectToGoogleApiClientAndGetTheAddress(boolean isForCheckInOut) {
-        if (CommonFunc.isGooglePlayServicesAvailable(getActivity())) {
-            if (dialogProgress == null) {
-                showProgressDialog();
-                checkForLocationSettings(isForCheckInOut);
-            }
-        }
-    }
-
-    private void checkForLocationSettings(final boolean isForCheckInOut) {
-        ////////////////////////////////////////////////////////
-
-        locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-        //**************************
-        builder.setAlwaysShow(true); //this is the key ingredient
-        //**************************
-
-        Task<LocationSettingsResponse> locationSettingsResponseTask =
-                LocationServices.getSettingsClient(getActivity()).checkLocationSettings(builder.build());
-        //
-        locationSettingsResponseTask.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
-                try {
-                    LocationSettingsResponse response = task.getResult(ApiException.class);
-                    if (isForCheckInOut) {
-                        callServiceRunningClass();
-                    }
-
-                } catch (ApiException exception) {
-                    dismissProgressDialog();
-
-                    switch (exception.getStatusCode()) {
-                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                            // Location settings are not satisfied. But could be fixed by showing the
-                            // user a dialog.
-                            try {
-                                // Cast to a resolvable exception.
-                                ResolvableApiException resolvable = (ResolvableApiException) exception;
-
-                                if (CommonFunc.isGpsOn(getActivity())) {
-                                    if (CommonFunc.getLocationMode(getActivity()) != 3) {
-                                        CommonFunc.gotoLocationSettings(getActivity());
-                                    }
-                                } else {
-                                    if (isForCheckInOut)
-                                        resolvable.startResolutionForResult(
-                                                getActivity(),
-                                                ConstantUtils.REQUEST_CHECK_SETTINGS_HOME_FRAGMENT_AT_THE_TIME_OF_CHECK_IN_OUT);
-                                    else
-                                        resolvable.startResolutionForResult(
-                                                getActivity(),
-                                                ConstantUtils.REQUEST_CHECK_SETTINGS_HOME_FRAGMENT_AT_THE_TIME_OF_MY_VISIT);
-                                }
-
-                            } catch (IntentSender.SendIntentException | ClassCastException e) {
-                                // Ignore the error.
-                                CommonFunc.commonDialog(getActivity(), "GPS not working.. Please refresh your device",
-                                        getString(R.string.justErrorCode) + " 98", false,
-                                        (AppCompatActivity) getActivity(), viewFragment.findViewById(R.id.fragment_home_scroolview));
-
-                            }
-
-                            break;
-                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                            CommonFunc.commonDialog(getActivity(), "GPS not working.. Please refresh your device",
-                                    getString(R.string.justErrorCode) + " 87", false,
-                                    (AppCompatActivity) getActivity(), viewFragment.findViewById(R.id.fragment_home_scroolview));
-                            break;
-                    }
-                }
-            }
-        });
-        //
-
-
-    }
-
-    private void callServiceRunningClass() {
-        if (startServiceAsyncTask == null) {
-            startServiceAsyncTask = new StartServiceAsyncTask();
-            startServiceAsyncTask.execute();
-        } else if (startServiceAsyncTask.getStatus() == AsyncTask.Status.RUNNING ||
-                startServiceAsyncTask.getStatus() == AsyncTask.Status.PENDING) {
-            startServiceAsyncTask.cancel(true);
-            startServiceAsyncTask = new StartServiceAsyncTask();
-            startServiceAsyncTask.execute();
-        } else {
-            startServiceAsyncTask = new StartServiceAsyncTask();
-            startServiceAsyncTask.execute();
-        }
-    }
-
-    private class StartServiceAsyncTask extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showProgressDialog();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            String res = null;
-
-            if (CommonFunc.isServiceRunningForCheckInAndOut(getActivity(), true)) {
-                res = CHECK_IN_BUTTON_NAME;
-            } else if (CommonFunc.isServiceRunningForCheckInAndOut(getActivity(), false)) {
-                res = CHECK_OUT_BUTTON_NAME;
-            }
-            return res;
-        }
-
-        @Override
-        protected void onPostExecute(String res) {
-            super.onPostExecute(res);
-            dismissProgressDialog();
-            if (res == null) {
-                if (!PreferenceUtils.getIsUserCheckedInManually(getActivity(), false,
-                        null, null, null, null)) {
-
-                    Intent intent = new Intent(getActivity(), PostCheckinServices.class);
-                    getActivity().startService(intent);
-                    ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                            .setText(CHECKING_IN_BUTTON_NAME);
-                    PreferenceUtils.setCheckInOutServiceRunning(getActivity(), true, "cin");
-
-                } else {
-                    Intent intent = new Intent(getActivity(), PostCheckoutServices.class);
-                    getActivity().startService(intent);
-                    ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
-                            .setText(CHECKING_OUT_BUTTON_NAME);
-                    PreferenceUtils.setCheckInOutServiceRunning(getActivity(), true, "cout");
-                }
-
-            } else if (res.equals(CHECK_IN_BUTTON_NAME)) {
-                CommonFunc.commonDialog(getActivity(), getString(R.string.alert), "Check-in under process please wait..",
-                        false,
-                        (AppCompatActivity) getActivity(), viewFragment.findViewById(R.id.fragment_home_scroolview));
-
-            } else if (res.equals(CHECK_OUT_BUTTON_NAME)) {
-                CommonFunc.commonDialog(getActivity(), getString(R.string.alert), "Check-out under process please wait..",
-                        false,
-                        (AppCompatActivity) getActivity(), viewFragment.findViewById(R.id.fragment_home_scroolview));
+    private void startLocationUpdates() {
+        showProgressDialog();
+        // Initialize MyLocationManager and pass this fragment as the listener
+        if (isAdded()) { // Check if the fragment is added to an activity
+            Context context = requireContext();
+            if (context != null) {
+                locationManager = new MyLocationManager(context, this);
+                locationManager.startLocationUpdates();
             } else {
-                Toast.makeText(getActivity(), "Open app again", Toast.LENGTH_SHORT).show();
-                System.exit(0);
+                Log.e("YourFragment", "Fragment's context is null");
+                dismissProgressDialog();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_LOCATION_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, start receiving location updates
+            startLocationUpdates();
+        } else {
+            // Permission denied, handle accordingly (e.g., show a message)
+        }
+    }
+
+    // Implement LocationUpdateListener interface method
+    @Override
+    public void onLocationUpdate(Location location) {
+        // Handle location updates
+
+        locationManager.stopLocationUpdates();
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        String address = CommonFunc.getAddressFromCoordinates(getActivity(), latitude, longitude);
+        String timeRef = String.valueOf(CommonFunc.getCurrentSystemTimeStamp());
+
+
+        if(((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out)).getText().toString().equals(CHECK_IN_BUTTON_NAME)) {
+            if ((new OfflineDatabase(getActivity()).addCheckInDetails(timeRef, String.valueOf(latitude), String.valueOf(longitude),
+                    address, timeRef, CommonFunc.getTodayDate())) == -1) {
+                dismissProgressDialog();
+                Toast.makeText(getActivity(), "Something wrong happened", Toast.LENGTH_SHORT).show();
+            } else {
+                if (PreferenceUtils.setUserHasCheckedIn(getActivity(), timeRef)) {
+                    if (PreferenceUtils.addCheckInTimeToSharedPreference(getActivity(), Long.parseLong(timeRef))) {
+                        PreferenceUtils.setCheckInLocationToSharedPreference(getActivity(), address);
+                        CheckInOutNotifi.closeCheckInAndOutWarnningNotification(getActivity(), true);
+                        setTimeAndLocation(address, CommonFunc.convertTimestampToTime(timeRef));
+                        runContiniouslyWorkTime();
+                        ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
+                                .setText(CHECK_OUT_BUTTON_NAME);
+                        CommonFunc.showNotification("Check-in", "You have successfully checked-in", NOTIFICATION_TYPE_NOTHING,
+                                getActivity(), false, false);
+                        dismissProgressDialog();
+
+                    }
+                }
+            }
+        }
+        else{
+            if ((new OfflineDatabase(getActivity()).addCheckOutDetails(timeRef, timeRef, String.valueOf(latitude), String.valueOf(longitude),
+                    address, CommonFunc.getTodayDate(), PreferenceUtils.getCheckedInUserAttenceId(getActivity()))) == -1) {
+                dismissProgressDialog();
+                Toast.makeText(getActivity(), "Something wrong happened", Toast.LENGTH_SHORT).show();
+            } else {
+                if (PreferenceUtils.setUserHasCheckedOut(getActivity())) {
+                        PreferenceUtils.setCheckInLocationToSharedPreference(getActivity(), address);
+                        CheckInOutNotifi.closeCheckInAndOutWarnningNotification(getActivity(), false);
+                        setTimeAndLocation("Check-In for location", "On Duty From NA");
+                        ((AppCompatButton) viewFragment.findViewById(R.id.fragment_home_check_in_out))
+                                .setText(CHECK_IN_BUTTON_NAME);
+                        if(timer!=null){
+                            timer.cancel();
+                            ((AppCompatTextView) viewFragment.findViewById(R.id.fragment_home_worked_time_id))
+                                    .setText(" 00:00:00");
+                        }
+
+                    CommonFunc.showNotification("Check-out", "You have successfully checked-out", NOTIFICATION_TYPE_NOTHING,
+                            getActivity(), false, false);
+
+                        dismissProgressDialog();
+                }
             }
         }
     }

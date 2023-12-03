@@ -36,4 +36,12 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
     </style>
 
+
+    <style name="cardview_Style" parent="CardView">
+
+        <item name="cardCornerRadius">2dp</item>
+        <item name="contentPadding">5dp</item>
+        <item name="android:layout_margin">5dp</item>
+    </style>
+
 </resources>

@@ -20,16 +20,15 @@ public class DBTableColumnsNames {
     static final String OFFLINE_CHECK_IN_SIGNAL_STRENGTH = "CheckIn_SignalStrength";
     static final String OFFLINE_CHECK_IN_NETWORK_TYPE = "CheckIn_NetworkType";
     static final String OFFLINE_CHECK_IN_REFERENCE_ID = "CheckIn_RefeId";
+    static final String OFFLINE_CHECK_IN_DATE = "CheckIn_Date";
 
     static final String OFFLINE_CHECK_OUT_TIME = "CheckOutTime";
     static final String OFFLINE_CHECK_OUT_LATITUDE = "CheckOut_Latitude";
     static final String OFFLINE_CHECK_OUT_LONGITUDE = "CheckOut_Longitude";
     static final String OFFLINE_CHECK_OUT_LOCATION = "CheckOut_Location";
-    static final String OFFLINE_CHECK_OUT_IS_MOCK = "CheckOut_IsMock";
-    static final String OFFLINE_CHECK_OUT_BATTERY_PERCENTAGE = "CheckOut_BatteryPerc";
-    static final String OFFLINE_CHECK_OUT_SIGNAL_STRENGTH = "CheckOut_SignalStrength";
-    static final String OFFLINE_CHECK_OUT_NETWORK_TYPE = "CheckOut_NetworkType";
     static final String OFFLINE_CHECK_OUT_REFERENCE_ID = "CheckOut_RefeId";
+    static final String OFFLINE_CHECK_OUT_CHECKIN_REFID = "CheckOut_CheckInRefeId";
+    static final String OFFLINE_CHECK_OUT_DATE = "CheckOut_Date";
     static final String OFFLINE_USERDETAILS_ID = "UserID";
     static final String OFFLINE_USERDETAILS_USERNAME = "UserName";
     static final String OFFLINE_USERDETAILS_FIRSTNAME = "FirstName";
@@ -47,10 +46,7 @@ public class DBTableColumnsNames {
             OFFLINE_CHECK_IN_LATITUDE + " TEXT," +
             OFFLINE_CHECK_IN_LONGITUDE + " TEXT," +
             OFFLINE_CHECK_IN_LOCATION + " TEXT," +
-            OFFLINE_CHECK_IN_IS_MOCK + " TEXT," +
-            OFFLINE_CHECK_IN_BATTERY_PERCENTAGE + " TEXT," +
-            OFFLINE_CHECK_IN_SIGNAL_STRENGTH + " TEXT," +
-            OFFLINE_CHECK_IN_NETWORK_TYPE + " TEXT," +
+            OFFLINE_CHECK_IN_DATE + " TEXT," +
             OFFLINE_CHECK_IN_REFERENCE_ID + " TEXT);";
 
     static final String CREATE_OFFLINE_ATTENDENCE_CHECKOUT_TABLE = "CREATE TABLE " + OFFLINE_ATTENDENCE_CHECKOUT_TABLE_NAME + "(" +
@@ -59,10 +55,8 @@ public class DBTableColumnsNames {
             OFFLINE_CHECK_OUT_LATITUDE + " TEXT," +
             OFFLINE_CHECK_OUT_LONGITUDE + " TEXT," +
             OFFLINE_CHECK_OUT_LOCATION + " TEXT," +
-            OFFLINE_CHECK_OUT_IS_MOCK + " TEXT," +
-            OFFLINE_CHECK_OUT_BATTERY_PERCENTAGE + " TEXT," +
-            OFFLINE_CHECK_OUT_SIGNAL_STRENGTH + " TEXT," +
-            OFFLINE_CHECK_OUT_NETWORK_TYPE + " TEXT," +
+            OFFLINE_CHECK_OUT_DATE + " TEXT," +
+            OFFLINE_CHECK_OUT_CHECKIN_REFID + " TEXT," +
             OFFLINE_CHECK_OUT_REFERENCE_ID + " TEXT);";
 
 

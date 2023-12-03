@@ -7,15 +7,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.workflow.database.offlineModels.AttendanceList;
+import com.example.workflow.models.AttendanceModel;
 import com.example.workflow.models.UserDetails;
+import com.example.workflow.utils.CommonFunc;
 import com.example.workflow.utils.PreferenceUtils;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class OfflineDatabase extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "workflowlite.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private Context context;
     // tabel name
     private static final String OFFLINE_LOC_TABEL = "OFFLINE_LOC_TABEL";
@@ -101,7 +104,7 @@ public class OfflineDatabase extends SQLiteOpenHelper {
 
     /////////////////// attendence add checkin //////////////////////////
     public int addCheckInDetails(String checkInTime, String latitude, String longitude, String location,
-                                 String referenceId) {
+                                 String referenceId, String date) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBTableColumnsNames.OFFLINE_CHECK_IN_TIME, checkInTime);
@@ -109,12 +112,13 @@ public class OfflineDatabase extends SQLiteOpenHelper {
         values.put(DBTableColumnsNames.OFFLINE_CHECK_IN_LONGITUDE, longitude);
         values.put(DBTableColumnsNames.OFFLINE_CHECK_IN_LOCATION, location);
         values.put(DBTableColumnsNames.OFFLINE_CHECK_IN_REFERENCE_ID, referenceId);
+        values.put(DBTableColumnsNames.OFFLINE_CHECK_IN_DATE, date);
         return (int) database.insert(DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKIN_TABLE_NAME, null, values);
     }
 
     /////////////////// attendence add checkout //////////////////////////
     public int addCheckOutDetails(String referenceId, String checkOutTime, String checkOutLatitude,
-                                  String checkOutLongitude, String location) {
+                                  String checkOutLongitude, String location, String date, String checkinID) {
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_TIME, checkOutTime);
@@ -122,6 +126,8 @@ public class OfflineDatabase extends SQLiteOpenHelper {
         values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_LONGITUDE, checkOutLongitude);
         values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_LOCATION, location);
         values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_REFERENCE_ID, referenceId);
+        values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_CHECKIN_REFID, checkinID);
+        values.put(DBTableColumnsNames.OFFLINE_CHECK_OUT_DATE, date);
         return (int) database.insert(DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKOUT_TABLE_NAME, null, values);
     }
 
@@ -179,11 +185,11 @@ public class OfflineDatabase extends SQLiteOpenHelper {
     }
 
     ////////////////////////// all user checkin details /////////////////
-    public ArrayList<AttendanceList> getUserCheckIn() {
+    public ArrayList<AttendanceList> getUserCheckIn(String date) {
         ArrayList<AttendanceList> attendenceListArrayList = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        String query = "SELECT * FROM " + DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKIN_TABLE_NAME;
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        String query = "SELECT * FROM " + DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKIN_TABLE_NAME + " WHERE " +  DBTableColumnsNames.OFFLINE_CHECK_IN_DATE + " = ?";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{date});
         if (cursor.moveToFirst()) {
             do {
                 AttendanceList attendenceList = new AttendanceList();
@@ -191,16 +197,9 @@ public class OfflineDatabase extends SQLiteOpenHelper {
                 attendenceList.setCheckInLatitude(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_LATITUDE)));
                 attendenceList.setCheckInLongitude(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_LONGITUDE)));
                 attendenceList.setCheckInTime(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_TIME)));
-                attendenceList.setCheckInLocation(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_LOCATION)));
-
-                attendenceList.setBatteryPresentage(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_BATTERY_PERCENTAGE)));
-                attendenceList.setIsMock(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_IS_MOCK)));
-                attendenceList.setNetworkType(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_NETWORK_TYPE)));
-                attendenceList.setSignalStrength(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_SIGNAL_STRENGTH)));
-
                 attendenceList.setRefNo(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_REFERENCE_ID)));
-                attendenceList.setEmpID(PreferenceUtils.getUserIdFromThePreference(context));
-
+                attendenceList.setCheckInRef(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_REFERENCE_ID)));
+                attendenceList.setCheckInLocation(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_IN_LOCATION)));
                 attendenceListArrayList.add(attendenceList);
             } while (cursor.moveToNext());
         }
@@ -210,11 +209,11 @@ public class OfflineDatabase extends SQLiteOpenHelper {
     }
 
     ////////////////////////// all user checkout details /////////////////
-    public ArrayList<AttendanceList> getUserCheckOut() {
+    public ArrayList<AttendanceList> getUserCheckOut(String date) {
         ArrayList<AttendanceList> attendenceListArrayList = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        String query = "SELECT * FROM " + DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKOUT_TABLE_NAME;
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        String query = "SELECT * FROM " + DBTableColumnsNames.OFFLINE_ATTENDENCE_CHECKOUT_TABLE_NAME+ " WHERE " +  DBTableColumnsNames.OFFLINE_CHECK_OUT_DATE + " = ?";
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{date});
         if (cursor.moveToFirst()) {
             do {
 
@@ -223,22 +222,55 @@ public class OfflineDatabase extends SQLiteOpenHelper {
                 attendenceList.setCheckOutLatitude(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_LATITUDE)));
                 attendenceList.setCheckOutLongitude(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_LONGITUDE)));
                 attendenceList.setCheckOutTime(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_TIME)));
-                attendenceList.setCheckOutLocation(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_LOCATION)));
-
-                attendenceList.setBatteryPresentage(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_BATTERY_PERCENTAGE)));
-                attendenceList.setIsMock(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_IS_MOCK)));
-                attendenceList.setNetworkType(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_NETWORK_TYPE)));
-                attendenceList.setSignalStrength(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_SIGNAL_STRENGTH)));
-
                 attendenceList.setRefNo(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_REFERENCE_ID)));
-                attendenceList.setEmpID(PreferenceUtils.getUserIdFromThePreference(context));
-
+                attendenceList.setCheckInRef(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_CHECKIN_REFID)));
+                attendenceList.setCheckOutLocation(cursor.getString(cursor.getColumnIndexOrThrow(DBTableColumnsNames.OFFLINE_CHECK_OUT_LOCATION)));
                 attendenceListArrayList.add(attendenceList);
             } while (cursor.moveToNext());
         }
         cursor.close();
         sqLiteDatabase.close();
         return attendenceListArrayList;
+    }
+
+    public ArrayList<AttendanceModel> getAttendanceDetails(String date){
+        ArrayList<AttendanceList> checkinDetails = getUserCheckIn(date);
+        ArrayList<AttendanceList> checkoutDetails = getUserCheckOut(date);
+
+        ArrayList<AttendanceModel> attendanceModelArrayList = new ArrayList<>();
+
+        for(int i = 0; i< checkinDetails.size(); i++){
+            if(checkoutDetails.size()>0) {
+                for (int j = 0; j < checkoutDetails.size(); j++) {
+                    AttendanceModel attendanceModel = new AttendanceModel();
+                    if (Objects.equals(checkinDetails.get(i).getCheckInRef(), checkoutDetails.get(j).getCheckInRef())) {
+                        attendanceModel.setAttendanceDate(date);
+                        attendanceModel.setCheckintime(checkinDetails.get(i).getCheckInTime());
+                        attendanceModel.setCheckinlocation(checkinDetails.get(i).getCheckInLocation());
+                        attendanceModel.setCheckouttime(checkoutDetails.get(j).getCheckOutTime());
+                        attendanceModel.setCheckoutlocation(checkoutDetails.get(j).getCheckOutLocation());
+                    } else {
+                        attendanceModel.setAttendanceDate(date);
+                        attendanceModel.setCheckintime(checkinDetails.get(i).getCheckInTime());
+                        attendanceModel.setCheckinlocation(checkinDetails.get(i).getCheckInLocation());
+                        attendanceModel.setCheckouttime("NA");
+                        attendanceModel.setCheckoutlocation("NA");
+                    }
+                    attendanceModelArrayList.add(attendanceModel);
+                }
+            }
+            else {
+                AttendanceModel attendanceModel = new AttendanceModel();
+                attendanceModel.setAttendanceDate(date);
+                attendanceModel.setCheckintime(checkinDetails.get(i).getCheckInTime());
+                attendanceModel.setCheckinlocation(checkinDetails.get(i).getCheckInLocation());
+                attendanceModel.setCheckouttime("NA");
+                attendanceModel.setCheckoutlocation("NA");
+                attendanceModelArrayList.add(attendanceModel);
+            }
+        }
+
+        return attendanceModelArrayList;
     }
 
     //////////////////////////// get count from check in
@@ -248,6 +280,9 @@ public class OfflineDatabase extends SQLiteOpenHelper {
         Cursor res = db.rawQuery(query, null);
         return res.getCount();
     }
+
+
+
 
     //////////////////////////// get count from check out
     public int getCheckOutCountFromDb() {

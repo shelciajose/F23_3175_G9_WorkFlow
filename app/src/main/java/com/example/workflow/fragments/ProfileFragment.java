@@ -234,8 +234,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                                 if(edt_email.getText().toString().trim().length()>3 && edt_email.getText().toString().contains("@")) {
                                     if(edt_dept.getText().toString().trim().length()>2) {
                                         if(edt_address.getText().toString().trim().length()>3) {
-                                                updateUserInfo(userId, firstName, lastName, edt_email.getText().toString().trim(), edt_userName.getText().toString().trim(),
-                                                        edt_address.getText().toString().trim(), edt_dept.getText().toString().trim());
+                                            updateUserInfo(userId, firstName, lastName, edt_email.getText().toString().trim(), edt_userName.getText().toString().trim(),
+                                                    edt_address.getText().toString().trim(), edt_dept.getText().toString().trim());
                                         } else {
                                             edt_address.setError("Please enter proper address");
                                         }

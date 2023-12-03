@@ -117,13 +117,11 @@ public class PreferenceUtils {
                 if (sharedPreferences.getString(CHECK_IN_OUT_PREFERENCE_ATTENCE_ID_KEY, null) != null) {
                     return true;
                 } else {
-                    if (showDialog)
-                        CommonFunc.showCheckINSnackBar(activity, context, displayView, message, buttonName);
+
                     return false;
                 }
             } else {
-                if (showDialog)
-                    CommonFunc.showCheckINSnackBar(activity, context, displayView, message, buttonName);
+
                 return false;
             }
         } else {

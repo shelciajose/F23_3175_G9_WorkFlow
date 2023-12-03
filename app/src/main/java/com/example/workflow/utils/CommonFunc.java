@@ -2,6 +2,7 @@ package com.example.workflow.utils;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 import static androidx.core.app.NotificationCompat.PRIORITY_HIGH;
+import static com.example.workflow.utils.ConstantUtils.FORMAT_CALENDAR_EVENT;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_CHANNEL_ID_OF_COMM_NOTIFICATION;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_CHANNEL_NAME_OF_COMM_NOTIFICATION;
 import static com.example.workflow.utils.ConstantUtils.NOTIFICATION_TYPE_GRANT_PERMISSION;
@@ -39,25 +40,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import com.example.workflow.R;
-import com.example.workflow.services.PostCheckinServices;
-import com.example.workflow.services.PostCheckoutServices;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 
@@ -93,7 +86,7 @@ public class CommonFunc {
 
     public static String getTodayDate() {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat df = new SimpleDateFormat(FORMAT_CALENDAR_EVENT);
         String formattedDate = df.format(c.getTime());
         return formattedDate;
     }
@@ -112,6 +105,10 @@ public class CommonFunc {
 
     public static String convertTimestampToTime(String dateInMilliseconds) {
         return DateFormat.format("hh:mm a", Long.parseLong(dateInMilliseconds)).toString();
+    }
+
+    public static String convertTimestampToDate(String dateInMilliseconds) {
+        return DateFormat.format(FORMAT_CALENDAR_EVENT, Long.parseLong(dateInMilliseconds)).toString();
     }
 
     ///// convert sec to hhmmss
@@ -150,14 +147,14 @@ public class CommonFunc {
     }
 
 
-    public static void showTheServiceClassErrorNotification(String tickerMessage, String contentMessage, String notificationType,
+    public static void showNotification(String tickerMessage, String contentMessage, String notificationType,
                                                             Context context, boolean autoCancel, boolean Ongoing) {
 
 
         CreateCommNotificationChannel(context);
 
 
-        Bitmap logoBitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.app_logo);
+        Bitmap logoBitmapIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_logo);
         Intent intentForPendingIntent = null;
         if (notificationType.equals(NOTIFICATION_TYPE_RELOG_USER)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -181,10 +178,10 @@ public class CommonFunc {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
 
             pendingIntent =  PendingIntent.getActivity(context, 0, intentForPendingIntent, PendingIntent.FLAG_IMMUTABLE);
-        else   pendingIntent =  PendingIntent.getActivity(context, 0, intentForPendingIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        else   pendingIntent =  PendingIntent.getActivity(context, 0, intentForPendingIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         //
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_OF_COMM_NOTIFICATION);
-        builder.setSmallIcon(R.drawable.app_ticker_icon);
+        builder.setSmallIcon(R.mipmap.ic_logo);
         builder.setLargeIcon(logoBitmapIcon);
         builder.setContentTitle(context.getString(R.string.app_name));
         builder.setTicker(tickerMessage);
@@ -234,59 +231,6 @@ public class CommonFunc {
         }
     }
 
-
-    public static boolean isServiceRunningForCheckInAndOut(Context context, boolean isCheckInServiceCheck) {
-
-
-        Object o = null;
-
-        if (isCheckInServiceCheck)
-            o = PostCheckinServices.class.getCanonicalName();
-        else
-            o = PostCheckoutServices.class.getCanonicalName();
-
-        try {
-
-            ActivityManager manager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-            if (manager != null) {
-                for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-                    if (service.service.getClassName().equals(o)) {
-                        return true;
-                    }
-                }
-            } else {
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            return true;
-
-        }
-
-    }
-
-
-    public static void showCheckINSnackBar(final AppCompatActivity activity, final Context context,
-                                           final View displayView, String message, String buttonName) {
-        try {
-            Snackbar snackbar = Snackbar
-                    .make(displayView, message, Snackbar.LENGTH_LONG)
-                    .setAction(buttonName, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            CheckinPrompt temp = new CheckinPrompt(context, activity, displayView);
-                            temp.startToChkInOutOut();
-                            Snackbar snackbar1 = Snackbar.make(view, "Going On..", Snackbar.LENGTH_SHORT);
-                            snackbar1.show();
-                        }
-                    });
-
-            snackbar.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
 
     private static void showNoInternetSnackBar(final AppCompatActivity activity, final Context context,
