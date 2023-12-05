@@ -81,6 +81,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Myholder>{
         holder.txtViewMessage.setText(message);
         holder.txtViewMessage.setVisibility(View.VISIBLE);
         holder.txtViewTime.setText(timeDate);
+
+        if(iconUrl != null) {
+            if(holder.iconImage != null) {
+                holder.iconImage.setImageBitmap(convertb64ToImage(iconUrl));
+            }
+        }
+
         getCurrentUser();
 
 //        try {
@@ -158,7 +165,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.Myholder>{
 
     class Myholder extends RecyclerView.ViewHolder {
         CircleImageView circleImgView;
-        ImageView iconImage;
+        CircleImageView iconImage;
         TextView txtViewMessage;
         TextView txtViewTime;
         LinearLayout messageLayout;

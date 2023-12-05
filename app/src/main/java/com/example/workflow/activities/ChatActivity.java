@@ -13,12 +13,14 @@ import static com.example.workflow.utils.ConstantUtils.KEY_USER;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER_ID;
 import static com.example.workflow.utils.ConstantUtils.KEY_USER_NAME;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -103,6 +105,9 @@ public class ChatActivity extends AppCompatActivity {
                     sendMessage(message);
                 }
                 editTxtMessage.setText("");
+                InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                mgr.hideSoftInputFromWindow(editTxtMessage.getWindowToken(), 0);
+                recyclerViewChat.scrollToPosition(recyclerViewChat.getAdapter().getItemCount() -1);
             }
         });
 
@@ -132,7 +137,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         readMessages();
-
     }
 
     private void readMessages() {
@@ -155,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
                     adapterChat = new ChatAdapter(ChatActivity.this, chatList, iconUri);
                     adapterChat.notifyDataSetChanged();
                     recyclerViewChat.setAdapter(adapterChat);
-                    recyclerViewChat.scrollToPosition(chatList.size() - 1);
+                    recyclerViewChat.scrollToPosition(recyclerViewChat.getAdapter().getItemCount() - 1);
                 }
             }
 
